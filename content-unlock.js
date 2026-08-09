@@ -12,7 +12,7 @@
 
   // ── 2. Valida com o backend ─────────────────────────────
   // ── CONFIG SUPABASE ── deve coincidir com o index.html ──
-  const SUPABASE_URL  = 'https://ackovomkgkmjfhoidwti.supabase.co';
+  const SUPABASE_URL  = 'https://zgjxdqgnjzhgxetpjaof.supabase.co';
 
   let result;
   try {
