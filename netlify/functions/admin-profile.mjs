@@ -14,6 +14,7 @@ const GW_FIELDS = new Set([
   "asaas_api_key","asaas_sandbox",
   "efibank_client_id","efibank_client_secret","efibank_pix_key","efibank_sandbox",
   "primepag_client_id","primepag_client_secret",
+  "omegapay_public_key","omegapay_secret_key",
 ]);
 
 function sbFetch(supabaseUrl, serviceKey, path, options = {}) {

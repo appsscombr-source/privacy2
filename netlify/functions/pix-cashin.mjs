@@ -80,6 +80,30 @@ const GATEWAYS = {
       return { pix_code: data.qr_code || data.pix_code, identifier: data.transactionId || data.id };
     },
   },
+  omegapay: {
+    label: "OmegaPay",
+    requiredFields: ["omegapay_public_key", "omegapay_secret_key"],
+    async cashin(cfg, amount, webhookUrl, buyer) {
+      buyer = buyer || {};
+      const identifier = (typeof crypto !== "undefined" && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : (Date.now().toString(36) + Math.random().toString(36).slice(2));
+      const payload = {
+        identifier,
+        amount: parseFloat(amount),
+        client: { name: buyer.name || "Cliente", email: buyer.email || "", phone: buyer.phone || "", document: buyer.document || "" },
+      };
+      if (webhookUrl) payload.callbackUrl = webhookUrl;
+      const res = await fetch("https://app.omegapayments.com.br/api/v1/gateway/pix/receive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-public-key": cfg.omegapay_public_key, "x-secret-key": cfg.omegapay_secret_key },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || (data.details && `${data.details.field}: ${data.details.issue}`) || "Erro ao gerar cobrança OmegaPay");
+      return { pix_code: data.pix && data.pix.code, qr_code_url: data.pix && data.pix.image, identifier };
+    },
+  },
 };
 
 export default async function handler(req) {
@@ -89,7 +113,7 @@ export default async function handler(req) {
   let body = {};
   try { body = await req.json(); } catch { return new Response(JSON.stringify({ error: "JSON inválido" }), { status: 400, headers: CORS }); }
 
-  const { amount, site_url, gateway: gatewayName = "syncpay", ...cfg } = body;
+  const { amount, site_url, buyer_name, buyer_email, buyer_phone, buyer_document, gateway: gatewayName = "syncpay", ...cfg } = body;
   if (!amount) return new Response(JSON.stringify({ error: "amount obrigatório" }), { status: 422, headers: CORS });
 
   const gateway = GATEWAYS[gatewayName];
@@ -100,7 +124,8 @@ export default async function handler(req) {
 
   try {
     const webhookUrl = site_url ? `${site_url}/api/pix-webhook` : null;
-    const result = await gateway.cashin(cfg, amount, webhookUrl);
+    const buyer = { name: buyer_name, email: buyer_email, phone: buyer_phone, document: buyer_document };
+    const result = await gateway.cashin(cfg, amount, webhookUrl, buyer);
     return new Response(JSON.stringify({ ok: true, ...result }), { status: 200, headers: CORS });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });

@@ -19,7 +19,8 @@ export async function onRequest({ request, env }) {
     return new Response(JSON.stringify({ error: "JSON inválido" }), { status: 400, headers: CORS });
   }
 
-  const { amount, plan_code, buyer_email, site_url, gateway: gatewayName = "syncpay", ...cfg } = body;
+  const { amount, plan_code, buyer_email, buyer_name, buyer_phone, buyer_document, site_url, gateway: gatewayName = "syncpay", ...cfg } = body;
+  const buyer = { name: buyer_name, email: buyer_email, phone: buyer_phone, document: buyer_document };
 
   if (!amount) {
     return new Response(JSON.stringify({ error: "amount obrigatório" }), { status: 422, headers: CORS });
@@ -43,7 +44,7 @@ export async function onRequest({ request, env }) {
 
   try {
     const webhookUrl = site_url ? `${site_url}/api/pix-webhook` : null;
-    const result = await gateway.cashin(cfg, amount, webhookUrl);
+    const result = await gateway.cashin(cfg, amount, webhookUrl, buyer);
 
     // Salva plan_code na pending_payments para o webhook usar na expiração
     let pendingDebug = null;

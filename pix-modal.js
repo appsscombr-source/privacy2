@@ -99,6 +99,7 @@
       if (gw === 'asaas'    && !cfg.asaas_api_key)                                      missing = true;
       if (gw === 'efibank'  && (!cfg.efibank_client_id || !cfg.efibank_client_secret))  missing = true;
       if (gw === 'primepag' && (!cfg.primepag_client_id || !cfg.primepag_client_secret)) missing = true;
+      if (gw === 'omegapay' && (!cfg.omegapay_public_key || !cfg.omegapay_secret_key))   missing = true;
 
       if (missing) {
         setElText('pixStatus', '❌ Credenciais do gateway não configuradas no painel admin.');

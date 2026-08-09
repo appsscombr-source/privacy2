@@ -5,6 +5,7 @@ function detectGateway(body, headers) {
   const h = headers.get("x-gateway");
   if (h) return h;
   if (body.action?.startsWith("payment")) return "mercadopago";
+  if (body.event?.startsWith("TRANSACTION_") && body.transaction) return "omegapay";
   if (body.event?.startsWith("PAYMENT_")) return "asaas";
   if (body.pix) return "efibank";
   if (body.transactionId && body.status === "PAID") return "primepag";
@@ -27,6 +28,10 @@ function parsePayment(gateway, body) {
     case "syncpay": {
       const d = body.data; if (!d || d.status !== "completed") return null;
       return { paymentId: d.id, status: "approved", amount: d.final_amount ?? d.amount, payerEmail: d.client?.email, payerName: d.debtor_account?.name || d.client?.name };
+    }
+    case "omegapay": {
+      const t = body.transaction; if (!t || t.status !== "COMPLETED" || body.event !== "TRANSACTION_PAID") return null;
+      return { paymentId: t.identifier || t.id, status: "approved", amount: t.amount, payerEmail: body.client?.email, payerName: body.client?.name };
     }
     case "mercadopago":
       if (body.action !== "payment.updated") return null;

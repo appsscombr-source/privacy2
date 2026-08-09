@@ -437,6 +437,7 @@
               <option value="asaas">Asaas</option>
               <option value="efibank">EfiBank</option>
               <option value="primepag">PrimePag</option>
+              <option value="omegapay">OmegaPay</option>
             </select>
           </div>
           <div class="field full">
@@ -540,6 +541,29 @@
           <div class="field">
             <label>Client Secret</label>
             <input id="pPrimepagClientSecret" type="password" placeholder="Client Secret">
+          </div>
+        </div>
+
+        <!-- Campos: OmegaPay -->
+        <div id="gw-omegapay" class="gw-fields form-row" style="display:none">
+          <div class="field full">
+            <label>Public Key</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="pOmegapayPublicKey" type="password" placeholder="pk_..." style="flex:1">
+              <button type="button" onclick="toggleKeyVisibility('pOmegapayPublicKey', this)" style="padding:8px 12px;background:var(--card2,#2a2a2a);border:1px solid var(--border,#333);border-radius:8px;color:var(--text,#fff);cursor:pointer;font-size:12px;white-space:nowrap">👁 Revelar</button>
+            </div>
+            <div class="field-hint">Painel OmegaPay → Configurações → API → Public Key</div>
+          </div>
+          <div class="field full">
+            <label>Secret Key</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="pOmegapaySecretKey" type="password" placeholder="sk_..." style="flex:1">
+              <button type="button" onclick="toggleKeyVisibility('pOmegapaySecretKey', this)" style="padding:8px 12px;background:var(--card2,#2a2a2a);border:1px solid var(--border,#333);border-radius:8px;color:var(--text,#fff);cursor:pointer;font-size:12px;white-space:nowrap">👁 Revelar</button>
+            </div>
+            <div class="field-hint">Painel OmegaPay → Configurações → API → Secret Key</div>
+          </div>
+          <div class="field full" style="color:var(--text-dim,#999);font-size:12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;padding:10px 12px;">
+            ⚠️ A documentação da OmegaPay marca nome, telefone e CPF/CNPJ do comprador como obrigatórios. O checkout do site só coleta o e-mail — os outros campos são enviados em branco. Se a OmegaPay passar a rejeitar por causa disso, será necessário coletar esses dados no checkout.
           </div>
         </div>
 
@@ -880,6 +904,9 @@ function applyProfile(cfg) {
   // PrimePag
   setVal('pPrimepagClientId',     cfg.primepag_client_id     || '');
   setVal('pPrimepagClientSecret', cfg.primepag_client_secret || '');
+  // OmegaPay
+  setVal('pOmegapayPublicKey', cfg.omegapay_public_key || '');
+  setVal('pOmegapaySecretKey', cfg.omegapay_secret_key || '');
   // Popula cache diretamente da config (independe de display:none nos blocos)
   _gwCache['pSyncpayClientId']     = cfg.syncpay_client_id     || '';
   _gwCache['pSyncpayClientSecret'] = cfg.syncpay_client_secret || '';
@@ -894,6 +921,8 @@ function applyProfile(cfg) {
   _gwCache['pEfibankSandbox']      = cfg.efibank_sandbox       ? '1' : '';
   _gwCache['pPrimepagClientId']     = cfg.primepag_client_id     || '';
   _gwCache['pPrimepagClientSecret'] = cfg.primepag_client_secret || '';
+  _gwCache['pOmegapayPublicKey']    = cfg.omegapay_public_key    || '';
+  _gwCache['pOmegapaySecretKey']    = cfg.omegapay_secret_key    || '';
   // Agora aplica o gateway selecionado (esconde/mostra bloco correto)
   onGatewayChange();
   // Webhook URL
@@ -1011,6 +1040,8 @@ async function saveProfile() {
     efibank_sandbox:       getVal('pEfibankSandbox') === '1',
     primepag_client_id:    getVal('pPrimepagClientId'),
     primepag_client_secret:getVal('pPrimepagClientSecret'),
+    omegapay_public_key:   getVal('pOmegapayPublicKey'),
+    omegapay_secret_key:   getVal('pOmegapaySecretKey'),
   };
   // Envia tudo via /api/admin-profile (salva separado por model_id)
   try {
