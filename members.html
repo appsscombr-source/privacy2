@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Área de Membros</title>
+<link rel="icon" href="images/faviconV2.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000;
+  --surface: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.1);
+  --text: #fff;
+  --text-dim: rgba(255,255,255,0.5);
+  --accent: #f6842c;
+  --accent2: #ffbfa3;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; background: #000; color: var(--text); font-family: 'Inter', sans-serif; }
+a { color: inherit; text-decoration: none; }
+
+/* ── AUTH ─────────────────────────────────────────────────── */
+#authScreen {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: #000;
+  padding: 24px;
+}
+.auth-card {
+  width: 100%; max-width: 380px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 36px 28px;
+  backdrop-filter: blur(20px);
+}
+.auth-logo {
+  display: block;
+  height: 26px;
+  width: auto;
+  margin: 0 auto 14px;
+  filter: brightness(0) invert(1);
+}
+.auth-sub {
+  font-size: 13px; color: var(--text-dim);
+  margin-bottom: 28px; line-height: 1.5;
+  text-align: center;
+}
+.auth-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px; padding: 3px;
+  margin-bottom: 22px;
+}
+.auth-tab {
+  flex: 1; text-align: center; padding: 8px;
+  border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; color: var(--text-dim);
+  transition: all .2s; font-family: inherit;
+  background: none; border: none;
+}
+.auth-tab.active { background: rgba(255,255,255,0.1); color: var(--text); }
+.field { margin-bottom: 12px; }
+.field label {
+  display: block; font-size: 11px; font-weight: 500;
+  color: var(--text-dim); margin-bottom: 5px;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.field input {
+  width: 100%; background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 11px 13px; color: var(--text);
+  font-size: 14px; font-family: inherit; outline: none;
+  transition: border-color .2s;
+}
+.field input:focus { border-color: var(--accent); }
+.field input::placeholder { color: rgba(255,255,255,0.2); }
+.btn-primary {
+  width: 100%; background: var(--accent);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 13px; font-size: 15px; font-weight: 600;
+  font-family: 'Syne', sans-serif; cursor: pointer;
+  margin-top: 4px; transition: opacity .2s, transform .1s;
+  letter-spacing: .01em;
+}
+.btn-primary:hover { opacity: .9; }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary:disabled { opacity: .45; cursor: default; }
+.auth-msg {
+  margin-top: 12px; font-size: 13px;
+  text-align: center; color: var(--text-dim); min-height: 18px;
+}
+.auth-msg.error { color: #ff6b6b; }
+.auth-msg.success { color: #4caf7d; }
+.token-hint {
+  margin-top: 16px; padding: 11px 13px;
+  background: rgba(246,132,44,0.08);
+  border: 1px solid rgba(246,132,44,0.2);
+  border-radius: 10px; font-size: 12px;
+  color: var(--accent2); line-height: 1.5; text-align: center;
+}
+
+/* ── SHORTS FEED ──────────────────────────────────────────── */
+#membersScreen {
+  display: none;
+  position: fixed; inset: 0;
+}
+
+#shortsContainer {
+  position: absolute; inset: 0;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#shortsContainer::-webkit-scrollbar { display: none; }
+
+.short-slide {
+  position: relative;
+  width: 100%; height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex; align-items: center; justify-content: center;
+  background: #000;
+  overflow: hidden;
+}
+
+/* Video */
+.short-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+.short-video-iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+
+/* Gradient overlay */
+.short-gradient {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.25) 0%,
+    transparent 25%,
+    transparent 50%,
+    rgba(0,0,0,0.6) 80%,
+    rgba(0,0,0,0.88) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Info overlay - bottom left */
+.short-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 72px;
+  z-index: 3;
+  padding: 0 16px 28px;
+}
+.short-num {
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.short-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px; font-weight: 700;
+  line-height: 1.3; color: #fff;
+  margin-bottom: 5px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+.short-desc {
+  font-size: 13px; color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Actions - right rail */
+.short-actions {
+  position: absolute;
+  bottom: 0; right: 0;
+  z-index: 3;
+  width: 72px;
+  padding-bottom: 28px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px;
+}
+.short-action-btn {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  cursor: pointer; user-select: none;
+}
+.short-action-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .15s;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.short-action-btn:active .short-action-icon {
+  transform: scale(.88);
+  background: rgba(255,255,255,0.2);
+}
+.short-action-label {
+  font-size: 10px; color: rgba(255,255,255,0.6);
+  font-weight: 500; text-align: center;
+}
+
+/* Expand description btn */
+.short-desc-toggle {
+  background: none; border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 12px; font-family: inherit;
+  cursor: pointer; padding: 2px 0;
+  display: none;
+}
+.short-desc.expanded {
+  -webkit-line-clamp: unset;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* Play/pause tap overlay */
+.tap-zone {
+  position: absolute; inset: 0;
+  z-index: 1;
+}
+.tap-feedback {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  transition: transform .12s ease-out, opacity .25s;
+  opacity: 0;
+  z-index: 10;
+}
+.tap-feedback.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+.tap-feedback svg { opacity: .9; }
+
+/* Thumbnail / loading state */
+.short-thumb {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: opacity .3s;
+}
+.short-thumb.hidden { opacity: 0; }
+
+/* Top bar */
+.shorts-topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 50;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  pointer-events: none;
+}
+.topbar-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px; font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -1px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  pointer-events: all;
+}
+.topbar-right {
+  display: flex; align-items: center; gap: 10px;
+  pointer-events: all;
+}
+#topbarEmail {
+  font-size: 12px; color: rgba(255,255,255,0.55);
+  max-width: 130px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+.btn-logout {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  font-size: 11px; padding: 5px 12px;
+  border-radius: 20px; cursor: pointer;
+  font-family: inherit; transition: all .2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.18); color: #fff; }
+
+/* Scroll indicator dots */
+.scroll-dots {
+  position: fixed; right: 6px; top: 50%; transform: translateY(-50%);
+  z-index: 50; display: flex; flex-direction: column; gap: 5px;
+  pointer-events: none; opacity: 0; transition: opacity .3s;
+}
+.scroll-dots.visible { opacity: 1; }
+.dot {
+  width: 3px; height: 3px; border-radius: 2px;
+  background: rgba(255,255,255,0.25);
+  transition: height .25s, background .25s;
+}
+.dot.active {
+  height: 14px;
+  background: var(--accent);
+}
+
+/* Loading state */
+.shorts-loading {
+  position: fixed; inset: 0;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; flex-direction: column; gap: 14px;
+}
+.loading-spinner {
+  width: 36px; height: 36px;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Empty state */
+.shorts-empty {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px; text-align: center; padding: 32px;
+}
+.shorts-empty svg { opacity: .25; margin: 0 auto; }
+.shorts-empty p { font-size: 15px; color: var(--text-dim); }
+
+/* Navigation arrows (desktop) */
+.nav-arrows {
+  position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+  z-index: 50; display: flex; flex-direction: column; gap: 10px;
+  pointer-events: all;
+}
+.nav-arrow {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, transform .15s;
+  font-size: 16px;
+}
+.nav-arrow:hover { background: rgba(255,255,255,0.22); transform: scale(1.08); }
+.nav-arrow:disabled { opacity: .25; cursor: default; }
+
+/* ── RESPONSIVO MOBILE ──────────────────────────────────────── */
+@media (max-width: 600px) {
+  .nav-arrows { display: none; }
+
+  /* Topbar */
+  .shorts-topbar { height: 52px; padding: 0 12px; }
+  .topbar-logo { font-size: 18px; }
+  #topbarEmail { max-width: 90px; font-size: 11px; }
+  .btn-logout { font-size: 10px; padding: 4px 10px; }
+
+  /* Info overlay */
+  .short-info {
+    padding: 0 12px 110px;
+    right: 64px;
+  }
+  .short-num { font-size: 9px; margin-bottom: 4px; }
+  .short-title { font-size: 15px; }
+  .short-desc { font-size: 12px; }
+
+  /* Actions rail */
+  .short-actions {
+    width: 64px;
+    padding-bottom: 110px;
+    gap: 16px;
+  }
+  .short-action-icon { width: 42px; height: 42px; }
+  .short-action-label { font-size: 9px; }
+
+  /* Counter badge */
+  .vid-counter { bottom: 12px; font-size: 11px; padding: 4px 12px; }
+
+  /* Auth card */
+  .auth-card { padding: 28px 20px; border-radius: 18px; }
+  .auth-logo { height: 22px; }
+  .auth-sub { font-size: 12px; margin-bottom: 20px; }
+  .field input { font-size: 16px; }
+  .btn-primary { font-size: 14px; padding: 14px; }
+}
+
+/* Safe area para iPhone com notch/home bar */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (max-width: 600px) {
+    .short-info { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+    .short-actions { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+    .vid-counter { bottom: calc(12px + env(safe-area-inset-bottom)); }
+  }
+}
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .short-info { padding: 0 18px 72px; right: 80px; }
+  .short-actions { width: 80px; padding-bottom: 72px; gap: 18px; }
+  .short-action-icon { width: 46px; height: 46px; }
+  #topbarEmail { max-width: 160px; }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  #shortsContainer { display: flex; flex-direction: column; align-items: center; }
+  .short-slide { max-width: 460px; margin: 0 auto; }
+}
+
+/* Video counter badge */
+.vid-counter {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 50;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  pointer-events: none;
+  transition: opacity .4s;
+}
+
+/* Progress bar */
+.short-progress {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: rgba(255,255,255,0.1); z-index: 4;
+}
+.short-progress-fill {
+  height: 100%; background: var(--accent);
+  width: 0%; transition: width .25s linear;
+}
+</style>
+<script>
+  window.SUPABASE_URL  = 'https://ackovomkgkmjfhoidwti.supabase.co';
+  window.SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFja292b21rZ2ttamZob2lkd3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDE5ODQsImV4cCI6MjA5NTU3Nzk4NH0.ofFVhY0Q7xHiekYZUiPHiDANbR8Q8W4W4RP-y9DTg0g';
+</script>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+  <div class="auth-card">
+    <img class="auth-logo" src="images/logo-black.svg" alt="privacy">
+    <div class="auth-sub">Acesse seu conteúdo exclusivo</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Criar conta</button>
+    </div>
+    <div id="formLogin">
+      <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email"></div>
+      <div class="field">
+        <label>Senha</label>
+        <div style="position:relative">
+          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px">
+          <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" aria-label="Mostrar senha" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);padding:4px;display:flex;align-items:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Entrar</button>
+    </div>
+    <div id="formRegister" style="display:none">
+      <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com" autocomplete="email"></div>
+      <div class="field">
+        <label>Senha</label>
+        <div style="position:relative">
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password" oninput="checkPasswordMatch()" style="padding-right:44px">
+          <button type="button" onclick="togglePasswordVisibility('regPassword', this)" aria-label="Mostrar senha" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);padding:4px;display:flex;align-items:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Confirmar senha</label>
+        <div style="position:relative">
+          <input type="password" id="regPassword2" placeholder="Repita a senha" oninput="checkPasswordMatch()" style="padding-right:44px">
+          <button type="button" onclick="togglePasswordVisibility('regPassword2', this)" aria-label="Mostrar senha" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);padding:4px;display:flex;align-items:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div id="passwordMatchMsg" style="font-size:12px;margin-top:6px;display:none;"></div>
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Criar conta</button>
+      <div class="token-hint" id="tokenHint" style="display:none">🔑 Token detectado! Sua conta será vinculada ao pagamento.</div>
+    </div>
+    <div class="auth-msg" id="authMsg"></div>
+  </div>
+</div>
+
+<!-- MEMBERS SCREEN -->
+<div id="membersScreen">
+  <!-- Top bar -->
+  <div class="shorts-topbar">
+    <div class="topbar-logo">privacy</div>
+    <div class="topbar-right">
+      <span id="topbarEmail"></span>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- Shorts container -->
+  <div id="shortsContainer"></div>
+
+  <!-- Desktop nav arrows -->
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="arrowUp" onclick="navigateTo(currentIndex - 1)" title="Anterior">↑</button>
+    <button class="nav-arrow" id="arrowDown" onclick="navigateTo(currentIndex + 1)" title="Próximo">↓</button>
+  </div>
+
+  <!-- Scroll dots -->
+  <div class="scroll-dots" id="scrollDots"></div>
+
+  <!-- Video counter -->
+  <div class="vid-counter" id="vidCounter"></div>
+</div>
+
+<script>
+var SUPABASE_URL  = window.SUPABASE_URL  || '';
+var SUPABASE_ANON = window.SUPABASE_ANON || '';
+var SESSION_KEY   = 'mbr_session';
+var currentUser   = null;
+var allVideos     = [];
+var currentIndex  = 0;
+var isScrolling   = false;
+
+var urlParams   = new URLSearchParams(window.location.search);
+var accessToken = urlParams.get('token') || '';
+
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  if (accessToken) {
+    switchTab('register');
+    var h = document.getElementById('tokenHint');
+    if (h) h.style.display = '';
+  }
+  var saved = localStorage.getItem(SESSION_KEY);
+  if (saved) {
+    try {
+      var s = JSON.parse(saved);
+      var token = s.access_token || (s.session && s.session.access_token);
+      if (token) { if (!s.access_token) s.access_token = token; currentUser = s; showMembers(); return; }
+    } catch(e) {}
+  }
+  showAuth();
+});
+
+// ── AUTH ──────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('formLogin').style.display    = tab === 'login' ? '' : 'none';
+  document.getElementById('formRegister').style.display = tab === 'register' ? '' : 'none';
+  setMsg('', '');
+}
+
+function setMsg(text, type) {
+  var el = document.getElementById('authMsg');
+  el.textContent = text;
+  el.className = 'auth-msg' + (type ? ' ' + type : '');
+}
+
+function traduzirErro(msg) {
+  if (!msg) return 'Ocorreu um erro. Tente novamente.';
+  var m = msg.toLowerCase();
+  if (m.includes('invalid login') || m.includes('invalid credentials') || m.includes('wrong password')) return 'E-mail ou senha incorretos.';
+  if (m.includes('user already registered') || m.includes('already been registered') || m.includes('already exists')) return 'Este e-mail já está cadastrado. Faça login.';
+  if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+  if (m.includes('signup is disabled')) return 'Cadastro temporariamente desativado.';
+  if (m.includes('password should be')) return 'A senha precisa ter pelo menos 6 caracteres.';
+  if (m.includes('unable to validate') || m.includes('token')) return 'Sessão expirada. Tente novamente.';
+  if (m.includes('rate limit') || m.includes('too many')) return 'Muitas tentativas. Aguarde alguns minutos.';
+  if (m.includes('network') || m.includes('fetch')) return 'Erro de conexão. Verifique sua internet.';
+  return msg;
+}
+
+function setLoading(btn, loading, label) {
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Aguarde...' : (label || btn._orig);
+}
+
+async function doLogin() {
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass  = document.getElementById('loginPassword').value;
+  if (!email || !pass) { setMsg('Preencha todos os campos.', 'error'); return; }
+  var btn = document.querySelector('#formLogin .btn-primary');
+  btn._orig = btn.textContent; setLoading(btn, true); setMsg('', '');
+  try {
+    var res  = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(traduzirErro(data.error_description || data.msg || data.message));
+    currentUser = data;
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    showMembers();
+  } catch(e) { setMsg(e.message, 'error'); } finally { setLoading(btn, false, 'Entrar'); }
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  var input = document.getElementById(inputId);
+  var isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.6 18.6 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.6 18.6 0 0 1-2.27 3.32M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+function checkPasswordMatch() {
+  var pass  = document.getElementById('regPassword').value;
+  var pass2 = document.getElementById('regPassword2').value;
+  var msg   = document.getElementById('passwordMatchMsg');
+  if (!pass2) { msg.style.display = 'none'; return; }
+  msg.style.display = 'block';
+  if (pass === pass2) {
+    msg.textContent = '✓ As senhas coincidem';
+    msg.style.color = '#4ade80';
+  } else {
+    msg.textContent = '✕ As senhas não coincidem';
+    msg.style.color = '#f87171';
+  }
+}
+
+async function doRegister() {
+  var email = document.getElementById('regEmail').value.trim();
+  var pass  = document.getElementById('regPassword').value;
+  var pass2 = document.getElementById('regPassword2').value;
+  if (!email || !pass) { setMsg('Preencha todos os campos.', 'error'); return; }
+  if (pass !== pass2)  { setMsg('As senhas não coincidem.', 'error'); return; }
+  if (pass.length < 6) { setMsg('Senha muito curta.', 'error'); return; }
+  var btn = document.querySelector('#formRegister .btn-primary');
+  btn._orig = btn.textContent; setLoading(btn, true); setMsg('', '');
+  try {
+    var res  = await fetch(SUPABASE_URL + '/auth/v1/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(traduzirErro(data.error_description || data.msg || data.message));
+    if (data.user) {
+      try {
+        await fetch('/api/activate-access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: accessToken || null, user_id: data.user.id, email }),
+        });
+      } catch(e) {}
+    }
+    if (data.access_token) {
+      currentUser = data;
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      showMembers();
+    } else {
+      // E-mail confirmado automaticamente no passo acima — tenta logar direto
+      try {
+        var loginRes = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+          body: JSON.stringify({ email, password: pass }),
+        });
+        var loginData = await loginRes.json();
+        if (loginRes.ok) {
+          currentUser = loginData;
+          localStorage.setItem(SESSION_KEY, JSON.stringify(loginData));
+          showMembers();
+          return;
+        }
+      } catch(e) {}
+      setMsg('Conta criada! Faça login.', 'success');
+      switchTab('login');
+    }
+  } catch(e) { setMsg(e.message, 'error'); } finally { setLoading(btn, false, 'Criar conta'); }
+}
+
+function logout() {
+  localStorage.removeItem(SESSION_KEY);
+  currentUser = null;
+  document.getElementById('membersScreen').style.display = 'none';
+  showAuth();
+}
+
+// ── TELAS ─────────────────────────────────────────────────────
+function showAuth() {
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('membersScreen').style.display = 'none';
+}
+
+function showMembers() {
+  document.getElementById('authScreen').style.display = 'none';
+  var ms = document.getElementById('membersScreen');
+  ms.style.display = 'block';
+  var email = (currentUser.user && currentUser.user.email) || currentUser.email || '';
+  document.getElementById('topbarEmail').textContent = email;
+  setTimeout(loadVideos, 50);
+}
+
+// ── LOAD VIDEOS ────────────────────────────────────────────────
+async function loadVideos() {
+  var container = document.getElementById('shortsContainer');
+  container.innerHTML = '<div class="shorts-loading"><div class="loading-spinner"></div><p style="font-size:13px;color:rgba(255,255,255,0.4)">Carregando...</p></div>';
+
+  try {
+    var modelId = null;
+    try {
+      var cfgRes = await fetch('/api/admin-profile');
+      if (cfgRes.ok) { var cfgData = await cfgRes.json(); modelId = cfgData._model_id || cfgData.model_id || null; }
+    } catch(e) {}
+
+    var modelFilter = modelId ? '&model_id=eq.' + encodeURIComponent(modelId) : '';
+    var res = await fetch(SUPABASE_URL + '/rest/v1/medias?type=neq.photo&order=created_at.desc' + modelFilter, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + currentUser.access_token }
+    });
+
+    if (res.status === 401) { logout(); return; }
+    allVideos = await res.json();
+    renderShorts(allVideos);
+  } catch(e) {
+    container.innerHTML = '<div class="shorts-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4M12 17v4"/></svg><p>Erro ao carregar. Tente novamente.</p></div>';
+  }
+}
+
+// ── RENDER SHORTS ──────────────────────────────────────────────
+function renderShorts(videos) {
+  var container = document.getElementById('shortsContainer');
+
+  if (!videos.length) {
+    container.innerHTML = '<div class="shorts-empty" style="height:100dvh"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg><p>Nenhum vídeo disponível ainda.</p></div>';
+    return;
+  }
+
+  // Dots
+  var dots = document.getElementById('scrollDots');
+  var maxDots = Math.min(videos.length, 12);
+  dots.innerHTML = Array.from({length: maxDots}, function(_, i) {
+    return '<div class="dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '"></div>';
+  }).join('');
+
+  // Counter
+  updateCounter(0, videos.length);
+
+  container.innerHTML = '';
+  videos.forEach(function(v, i) {
+    container.appendChild(buildSlide(v, i, videos.length));
+  });
+
+  // Scroll observer
+  setupScrollObserver();
+  setupKeyboard();
+  updateArrows();
+}
+
+function buildSlide(v, i, total) {
+  var slide = document.createElement('div');
+  slide.className = 'short-slide';
+  slide.dataset.index = i;
+
+  var isYt     = v.url && /youtube\.com|youtu\.be/i.test(v.url);
+  var isEmbed  = v.url && /turbo\.cr\/embed|streamtape\.com\/e\/|mixdrop\.co\/e\/|\/embed\//i.test(v.url) && !isYt;
+  var isVideo  = v.url && (/\.(mp4|webm|mov)/i.test(v.url) || v.type === 'video' || v.type === 'paid') && !isEmbed && !isYt;
+
+  // Background / thumb
+  if (v.thumbnail) {
+    var thumb = document.createElement('img');
+    thumb.className = 'short-thumb';
+    thumb.src = v.thumbnail;
+    thumb.alt = '';
+    thumb.loading = i === 0 ? 'eager' : 'lazy';
+    slide.appendChild(thumb);
+  } else {
+    var thumbBg = document.createElement('div');
+    thumbBg.style.cssText = 'position:absolute;inset:0;background:linear-gradient(135deg,#1a0a00,#0d0d0d);';
+    slide.appendChild(thumbBg);
+  }
+
+  // Video element
+  if (isYt) {
+    var ytId = (v.url.match(/(?:v=|youtu\.be\/)([^&?]+)/) || [])[1] || '';
+    var iframe = document.createElement('iframe');
+    iframe.className = 'short-video-iframe';
+    iframe.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=0&mute=1&playsinline=1&rel=0&modestbranding=1';
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.allowFullscreen = true;
+    iframe.dataset.ytSrc = iframe.src;
+    iframe.dataset.ytAutoSrc = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=0&playsinline=1&rel=0&modestbranding=1';
+    slide.appendChild(iframe);
+  } else if (isEmbed) {
+    var embedFrame = document.createElement('iframe');
+    embedFrame.className = 'short-video-iframe';
+    embedFrame.src = v.url;
+    embedFrame.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
+    embedFrame.allowFullscreen = true;
+    embedFrame.setAttribute('allowfullscreen', '');
+    embedFrame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;background:#000;';
+    slide.appendChild(embedFrame);
+  } else if (isVideo) {
+    var vid = document.createElement('video');
+    vid.className = 'short-video';
+    vid.src = v.url;
+    vid.loop = true;
+    vid.playsinline = true;
+    vid.preload = i === 0 ? 'auto' : 'none';
+    vid.setAttribute('playsinline', '');
+    slide.appendChild(vid);
+
+    // Tap to play/pause
+    var tapZone = document.createElement('div');
+    tapZone.className = 'tap-zone';
+    var tapFb = document.createElement('div');
+    tapFb.className = 'tap-feedback';
+    tapFb.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    tapZone.appendChild(tapFb);
+
+    tapZone.addEventListener('click', function() {
+      if (vid.paused) {
+        vid.play();
+        tapFb.querySelector('svg').innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+      } else {
+        vid.pause();
+        tapFb.querySelector('svg').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+      }
+      tapFb.classList.add('show');
+      setTimeout(function() { tapFb.classList.remove('show'); }, 600);
+    });
+    slide.appendChild(tapZone);
+
+    // Progress bar
+    var progWrap = document.createElement('div');
+    progWrap.className = 'short-progress';
+    var progFill = document.createElement('div');
+    progFill.className = 'short-progress-fill';
+    progWrap.appendChild(progFill);
+    slide.appendChild(progWrap);
+
+    vid.addEventListener('timeupdate', function() {
+      if (vid.duration) progFill.style.width = ((vid.currentTime / vid.duration) * 100) + '%';
+    });
+  }
+
+  // Gradient
+  var grad = document.createElement('div');
+  grad.className = 'short-gradient';
+  slide.appendChild(grad);
+
+  // Info
+  var info = document.createElement('div');
+  info.className = 'short-info';
+  info.innerHTML =
+    '<div class="short-num">' + (i + 1) + ' / ' + total + '</div>' +
+    '<div class="short-title">' + escHtml(v.title || 'Sem título') + '</div>' +
+    (v.description
+      ? '<div class="short-desc" id="desc-' + i + '">' + escHtml(v.description) + '</div>'
+      : '');
+  slide.appendChild(info);
+
+  // Actions
+  var actions = document.createElement('div');
+  actions.className = 'short-actions';
+
+  // Fullscreen button
+  actions.innerHTML +=
+    '<div class="short-action-btn" onclick="toggleFullscreen(this)">' +
+      '<div class="short-action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div>' +
+      '<span class="short-action-label">Tela cheia</span>' +
+    '</div>';
+
+  // Share button
+  actions.innerHTML +=
+    '<div class="short-action-btn" onclick="shareVideo()">' +
+      '<div class="short-action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>' +
+      '<span class="short-action-label">Compartilhar</span>' +
+    '</div>';
+
+  slide.appendChild(actions);
+  return slide;
+}
+
+// ── SCROLL OBSERVER ────────────────────────────────────────────
+function setupScrollObserver() {
+  var container = document.getElementById('shortsContainer');
+  var slides = container.querySelectorAll('.short-slide');
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.intersectionRatio < 0.6) return;
+      var idx = parseInt(entry.target.dataset.index);
+      if (idx === currentIndex) return;
+      currentIndex = idx;
+      onSlideChange(idx);
+    });
+  }, { threshold: 0.6 });
+
+  slides.forEach(function(s) { observer.observe(s); });
+
+  // Show dots on scroll
+  var dotsEl = document.getElementById('scrollDots');
+  var dotsTimer;
+  container.addEventListener('scroll', function() {
+    dotsEl.classList.add('visible');
+    clearTimeout(dotsTimer);
+    dotsTimer = setTimeout(function() { dotsEl.classList.remove('visible'); }, 1500);
+  }, { passive: true });
+}
+
+function onSlideChange(idx) {
+  var container = document.getElementById('shortsContainer');
+  var slides = container.querySelectorAll('.short-slide');
+
+  // Pause all videos
+  slides.forEach(function(slide, i) {
+    var vid = slide.querySelector('video');
+    var iframe = slide.querySelector('iframe');
+    if (vid) vid.pause();
+    if (iframe && Math.abs(i - idx) > 1) {
+      // Reset iframe away from view (stop audio) — YouTube e embeds genéricos
+      if (iframe.dataset.ytSrc) {
+        iframe.src = iframe.dataset.ytSrc;
+      } else {
+        // Para embeds genéricos (turbo.cr etc), recarrega para pausar
+        var embedSrc = iframe.src;
+        iframe.src = '';
+        iframe.src = embedSrc;
+      }
+    }
+  });
+
+  // Play current
+  var current = slides[idx];
+  if (current) {
+    var vid = current.querySelector('video');
+    var iframe = current.querySelector('iframe');
+    if (vid) {
+      vid.play().catch(function() {});
+    }
+    if (iframe && iframe.dataset.ytAutoSrc) {
+      iframe.src = iframe.dataset.ytAutoSrc;
+    }
+  }
+
+  // Update dots
+  var dots = document.querySelectorAll('.dot');
+  var maxDots = dots.length;
+  dots.forEach(function(d, i) { d.classList.toggle('active', i === Math.min(idx, maxDots - 1)); });
+
+  updateCounter(idx, allVideos.length);
+  updateArrows();
+}
+
+function navigateTo(idx) {
+  if (idx < 0 || idx >= allVideos.length) return;
+  var container = document.getElementById('shortsContainer');
+  var slides = container.querySelectorAll('.short-slide');
+  if (slides[idx]) {
+    slides[idx].scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function updateCounter(idx, total) {
+  var el = document.getElementById('vidCounter');
+  if (el) el.textContent = (idx + 1) + ' de ' + total;
+}
+
+function updateArrows() {
+  var up   = document.getElementById('arrowUp');
+  var down = document.getElementById('arrowDown');
+  if (up)   up.disabled   = currentIndex <= 0;
+  if (down) down.disabled = currentIndex >= allVideos.length - 1;
+}
+
+// ── KEYBOARD ───────────────────────────────────────────────────
+function setupKeyboard() {
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'j') navigateTo(currentIndex + 1);
+    if (e.key === 'ArrowUp'   || e.key === 'k') navigateTo(currentIndex - 1);
+    if (e.key === ' ') {
+      var slides = document.querySelectorAll('.short-slide');
+      var vid = slides[currentIndex] && slides[currentIndex].querySelector('video');
+      if (vid) { vid.paused ? vid.play() : vid.pause(); }
+      e.preventDefault();
+    }
+  });
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────
+function toggleFullscreen(btn) {
+  var slides = document.querySelectorAll('.short-slide');
+  var slide = slides[currentIndex];
+  var vid = slide && slide.querySelector('video');
+  if (!vid) return;
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    vid.requestFullscreen && vid.requestFullscreen();
+  }
+}
+
+function shareVideo() {
+  var mainUrl = window.location.origin + '/';
+  var text = 'Confira este conteúdo exclusivo!';
+  if (navigator.share) {
+    navigator.share({ title: text, url: mainUrl }).catch(function() {});
+  } else {
+    navigator.clipboard && navigator.clipboard.writeText(mainUrl);
+    showToast('🔗 Link copiado!');
+  }
+}
+
+function showToast(msg) {
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,0.95);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);white-space:nowrap;pointer-events:none';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function() { t.remove(); }, 2200);
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Auto-play first video after render
+document.addEventListener('DOMContentLoaded', function() {
+  // handled by showMembers -> loadVideos
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+# Cloudflare Pages — sem redirects necessários
+# As funções em /functions/api/* já são acessíveis em /api/* automaticamente

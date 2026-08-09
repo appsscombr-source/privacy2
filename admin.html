@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Admin — Privacy</title>
+<link rel="icon" href="images/faviconV2.png" type="image/png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --bg:#0e0e10; --surface:#17171a; --surface2:#1f1f23; --border:#2a2a2f;
+    --accent:#f6841c; --accent2:#ffd89c; --text:#f0f0f0; --text-dim:#888;
+    --danger:#e05a5a; --success:#4caf87; --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+  /* ── LOGIN ── */
+  #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 60% 40%,#1a1005 0%,#0e0e10 70%)}
+  .login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:380px;text-align:center}
+  .login-card .logo{width:48px;height:48px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px}
+  .login-card h1{font-size:20px;font-weight:600;margin-bottom:6px}
+  .login-card p{color:var(--text-dim);font-size:14px;margin-bottom:32px}
+
+  .field{display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:16px}
+  .field label{font-size:12px;font-weight:500;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em}
+  input,select,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:inherit;font-size:14px;width:100%;outline:none;transition:border-color .2s}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s}
+  .btn:active{transform:scale(.97)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-primary{background:var(--accent);color:#000;width:100%}
+  .btn-primary:hover:not(:disabled){opacity:.9}
+  .btn-sm{padding:7px 14px;font-size:12px;border-radius:8px;width:auto}
+  .btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+  .btn-danger:hover{background:rgba(224,90,90,.1)}
+  .btn-ghost{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+  .btn-success{background:var(--success);color:#000}
+  .btn-save{background:var(--accent);color:#000}
+
+  /* ── TOPBAR ── */
+  #app{display:none}
+  .topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
+  .topbar-left{display:flex;align-items:center;gap:12px}
+  .topbar-logo{width:32px;height:32px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .topbar h2{font-size:15px;font-weight:600}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .badge-site{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:6px}
+
+  /* ── TABS ── */
+  .tabs-nav{display:flex;gap:4px;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;overflow-x:auto}
+  .tab-btn{flex:1;min-width:fit-content;padding:9px 10px;border-radius:9px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text-dim);transition:all .2s;white-space:nowrap}
+  .tab-btn.active{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+
+  /* ── CARD ── */
+  .wrap{max-width:900px;margin:0 auto;padding:32px 24px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px}
+  .card-title{font-size:13px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .card-title-left{display:flex;align-items:center;gap:8px}
+  .accent{color:var(--accent)}
+
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-row .field.full{grid-column:1/-1}
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider{font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin:24px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+  /* ── MEDIA LIST ── */
+  .media-list{display:flex;flex-direction:column;gap:10px}
+  .media-row{display:flex;align-items:center;gap:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;animation:fadeIn .25s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .media-thumb{width:52px;height:52px;border-radius:8px;background:var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden}
+  .media-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+  .media-info{flex:1;min-width:0}
+  .media-title-text{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+  .media-url-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .media-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.05em}
+  .tag-video{background:rgba(246,132,28,.15);color:var(--accent)}
+  .tag-photo{background:rgba(76,175,135,.15);color:var(--success)}
+  .tag-paid{background:rgba(255,216,156,.15);color:var(--accent2)}
+  .tag-free{background:rgba(255,255,255,.07);color:var(--text-dim)}
+  .count-badge{background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:12px;padding:2px 8px;border-radius:6px;font-family:'DM Mono',monospace}
+
+  /* ── BULK SELECT ── */
+  .media-row.selected{border-color:var(--accent);background:rgba(246,132,28,.08)}
+  .media-checkbox{width:18px;height:18px;cursor:pointer;accent-color:var(--accent);flex-shrink:0}
+  .bulk-toolbar{display:none;align-items:center;gap:10px;padding:10px 14px;background:rgba(246,132,28,.1);border:1px solid rgba(246,132,28,.3);border-radius:10px;margin-bottom:10px;animation:fadeIn .2s ease}
+  .bulk-toolbar.visible{display:flex}
+  .bulk-sel-count{font-size:13px;font-weight:600;color:var(--accent);flex:1}
+  .media-select-all-row{display:none;align-items:center;gap:8px;padding:6px 0 4px;font-size:13px;color:var(--text-dim);cursor:pointer}
+  .media-select-all-row.visible{display:flex}
+
+  /* ── BULK ── */
+  .bulk-hint{font-size:12px;color:var(--text-dim);margin-top:8px;line-height:1.6}
+  .bulk-hint code{background:var(--surface2);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace}
+  .bulk-progress{margin-top:14px;display:none}
+  .progress-bar{height:6px;background:var(--surface2);border-radius:6px;overflow:hidden;margin-top:6px}
+  .progress-fill{height:100%;background:var(--accent);border-radius:6px;transition:width .3s}
+  .progress-label{font-size:12px;color:var(--text-dim);margin-top:6px}
+
+  /* ── AVATAR PREVIEW ── */
+  .avatar-preview-wrap{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+  .avatar-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--border);background:var(--surface2)}
+  .avatar-preview-hint{font-size:12px;color:var(--text-dim);line-height:1.6}
+
+  /* ── PLANO CARD ── */
+  .plan-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px}
+  .plan-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px}
+  .plan-card-title{font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+  .price-sync-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+  .price-sync-arrow{font-size:18px;color:var(--accent);padding-bottom:10px;text-align:center;opacity:.6;user-select:none}
+
+  /* ── PREVIEW DEVICE ── */
+  .device-frame{background:#1a1a1a;border:2px solid var(--border);border-radius:20px;overflow:hidden;max-width:390px;margin:0 auto;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .device-bar{height:36px;background:#111;display:flex;align-items:center;justify-content:center;gap:6px}
+  .device-bar span{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);background:var(--surface2);padding:3px 10px;border-radius:20px;white-space:nowrap;overflow:hidden;max-width:220px;text-overflow:ellipsis}
+  .device-screen{height:600px;overflow-y:auto;background:#f9f6f2;scrollbar-width:thin}
+  .device-screen::-webkit-scrollbar{width:4px}
+  .device-screen::-webkit-scrollbar-thumb{background:var(--border)}
+
+  /* ── TOAST ── */
+  #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 22px;border-radius:12px;font-size:14px;font-weight:500;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+  #toast.ok{border-color:var(--success);color:var(--success)}
+  #toast.err{border-color:var(--danger);color:var(--danger)}
+  .empty{text-align:center;color:var(--text-dim);padding:40px 0;font-size:14px}
+
+  /* ── STATS GRID ── */
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stats-grid .field{margin-bottom:0}
+
+  /* ── INLINE HINT ── */
+  .field-hint{font-size:11px;color:var(--text-dim);margin-top:4px}
+
+  @media(max-width:640px){
+    .form-row{grid-template-columns:1fr}
+    .form-row .field.full{grid-column:1}
+    .plan-cards{grid-template-columns:1fr}
+    .stats-grid{grid-template-columns:1fr 1fr}
+    .badge-site{display:none}
+    .wrap{padding:20px 16px}
+    .tabs-nav .tab-btn{font-size:11px;padding:8px 6px}
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo">🔐</div>
+    <h1>Painel Admin</h1>
+    <p>Entre com seu e-mail e senha cadastrados no Supabase</p>
+    <div id="loginError" style="display:none;background:rgba(224,90,90,.15);border:1px solid var(--danger);color:var(--danger);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;text-align:left"></div>
+    <div class="field">
+      <label>E-mail</label>
+      <input id="emailInput" type="email" placeholder="admin@seusite.com">
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input id="passwordInput" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">🎬</div>
+      <h2>Painel Admin</h2>
+    </div>
+    <div class="topbar-right">
+      <span class="badge-site" id="siteLabel"></span>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="tabs-nav">
+      <button class="tab-btn active"  onclick="switchTab('perfil')">👤 Perfil</button>
+      <button class="tab-btn"         onclick="switchTab('single')">➕ Adicionar</button>
+      <button class="tab-btn"         onclick="switchTab('bulk')">📋 Em massa</button>
+      <button class="tab-btn"         onclick="switchTab('list')">🗂️ Mídias <span class="count-badge" id="countBadge" style="margin-left:4px">0</span></button>
+      <button class="tab-btn"         onclick="switchTab('preview')">👁️ Preview</button>
+      <button class="tab-btn"         onclick="switchTab('meuacesso')">🔑 Meu acesso</button>
+    </div>
+
+    <!-- ══════════════ TAB: PERFIL ══════════════ -->
+    <div id="tab-perfil">
+
+      <!-- Identidade -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><span class="accent">👤</span> Identidade</div>
+          <button class="btn btn-save btn-sm" onclick="saveProfile()">💾 Salvar tudo</button>
+        </div>
+
+        <div class="avatar-preview-wrap">
+          <img id="avatarPreviewImg" class="avatar-preview" src="" alt="Avatar" style="background:var(--surface2);transition:opacity .2s">
+          <div class="avatar-preview-hint">
+            A foto fica em <code>images/avatar.webp</code><br>
+            Cole a URL da nova foto no campo abaixo e salve.
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field full">
+            <label>URL da foto de perfil</label>
+            <input id="pAvatarUrl" type="url" placeholder="https://cdn.exemplo.com/avatar.webp" oninput="previewAvatar(this.value)">
+            <div class="field-hint">Deixe em branco para usar o arquivo local images/avatar.webp</div>
+          </div>
+          <div class="avatar-preview-wrap" style="margin-bottom:8px">
+            <img id="bannerPreviewImg" src="" alt="Banner" style="width:120px;height:40px;border-radius:6px;object-fit:cover;border:2px solid var(--border);background:var(--surface2);transition:opacity .2s">
+            <div class="avatar-preview-hint">Preview do banner do perfil.</div>
+          </div>
+          <div class="field full">
+            <label>URL do banner</label>
+            <input id="pBannerUrl" type="url" placeholder="https://cdn.exemplo.com/banner.webp" oninput="previewBanner(this.value)">
+            <div class="field-hint">Deixe em branco para usar o arquivo local images/banner.webp</div>
+          </div>
+          <div class="field full">
+            <label>🔑 ID do Modelo (identifica os vídeos deste site)</label>
+            <input id="pModelId" type="text" placeholder="ex: susana, lexy, julia">
+            <small style="color:#888;font-size:11px">Cada deploy deve ter um ID único. Os vídeos cadastrados ficam vinculados a este ID.</small>
+          </div>
+          <div class="field">
+            <label>Nome de exibição</label>
+            <input id="pName" type="text" placeholder="Larissa Vitoria">
+          </div>
+          <div class="field">
+            <label>Username (com @)</label>
+            <input id="pHandle" type="text" placeholder="@larivictoria">
+          </div>
+          <div class="field full">
+            <label>Bio</label>
+            <textarea id="pBio" placeholder="Mae solteira, safada e sem vergonha..."></textarea>
+          </div>
+          <div class="field full">
+            <label>Link do Telegram</label>
+            <input id="pTelegram" type="text" placeholder="https://t.me/seubot">
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats do perfil -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">📊</span> Estatísticas do perfil</div></div>
+
+        <div class="section-divider">Topo do perfil (ícones)</div>
+        <div class="stats-grid">
+          <div class="field">
+            <label>📷 Fotos</label>
+            <input id="pStatFotos" type="text" placeholder="312">
+          </div>
+          <div class="field">
+            <label>▶️ Vídeos</label>
+            <input id="pStatVideos" type="text" placeholder="249">
+          </div>
+          <div class="field">
+            <label>🔒 Exclusivos</label>
+            <input id="pStatExclusivos" type="text" placeholder="8">
+          </div>
+          <div class="field">
+            <label>❤️ Likes</label>
+            <input id="pStatLikes" type="text" placeholder="19.2K">
+          </div>
+        </div>
+
+        <div class="section-divider">Barra Postagens / Mídias</div>
+        <div class="stats-grid">
+          <div class="field">
+            <label>📄 Postagens</label>
+            <input id="pStatPostagens" type="text" placeholder="284">
+          </div>
+          <div class="field">
+            <label>🎬 Mídias</label>
+            <input id="pStatMidias" type="text" placeholder="561">
+          </div>
+        </div>
+      </div>
+
+      <!-- Planos / Preços -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">💰</span> Planos e preços</div></div>
+        <div class="plan-cards">
+
+          <div class="plan-card">
+            <div class="plan-card-title">🗓️ 1 Mês</div>
+            <div class="field">
+              <label>Preço normal (R$)</label>
+              <input id="pPlan1mFull" type="text" placeholder="55,90" oninput="syncPlan('1m','full')">
+            </div>
+            <div class="price-sync-row">
+              <div class="field">
+                <label>Desconto (%)</label>
+                <input id="pPlan1mOff" type="number" min="0" max="99" step="1" placeholder="50" oninput="syncPlan('1m','off')">
+              </div>
+              <div class="price-sync-arrow">⇄</div>
+              <div class="field">
+                <label>Preço promocional (R$)</label>
+                <input id="pPlan1m" type="text" placeholder="27,95" oninput="syncPlan('1m','promo')">
+              </div>
+            </div>
+            <div id="disc1m" style="margin-top:8px;font-size:12px;font-weight:600;color:var(--success);min-height:18px"></div>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-card-title">📅 3 Meses</div>
+            <div class="field">
+              <label>Preço normal (R$)</label>
+              <input id="pPlan3mFull" type="text" placeholder="75,90" oninput="syncPlan('3m','full')">
+            </div>
+            <div class="price-sync-row">
+              <div class="field">
+                <label>Desconto (%)</label>
+                <input id="pPlan3mOff" type="number" min="0" max="99" step="1" placeholder="50" oninput="syncPlan('3m','off')">
+              </div>
+              <div class="price-sync-arrow">⇄</div>
+              <div class="field">
+                <label>Preço promocional (R$)</label>
+                <input id="pPlan3m" type="text" placeholder="37,95" oninput="syncPlan('3m','promo')">
+              </div>
+            </div>
+            <div id="disc3m" style="margin-top:8px;font-size:12px;font-weight:600;color:var(--success);min-height:18px"></div>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-card-title">📆 12 Meses</div>
+            <div class="field">
+              <label>Preço normal (R$)</label>
+              <input id="pPlan12mFull" type="text" placeholder="439,80" oninput="syncPlan('12m','full')">
+            </div>
+            <div class="price-sync-row">
+              <div class="field">
+                <label>Desconto (%)</label>
+                <input id="pPlan12mOff" type="number" min="0" max="99" step="1" placeholder="80" oninput="syncPlan('12m','off')">
+              </div>
+              <div class="price-sync-arrow">⇄</div>
+              <div class="field">
+                <label>Preço promocional (R$)</label>
+                <input id="pPlan12m" type="text" placeholder="87,96" oninput="syncPlan('12m','promo')">
+              </div>
+            </div>
+            <div id="disc12m" style="margin-top:8px;font-size:12px;font-weight:600;color:var(--success);min-height:18px"></div>
+          </div>
+
+        </div>
+
+        <div class="section-divider" style="margin-top:20px">Oferta de assinatura em destaque</div>
+        <div class="field full">
+          <label>Mensagem de destaque (aparece no card de oferta, acima do botão de assinar)</label>
+          <textarea id="pOfferMsg" placeholder="Ex: Conteúdo exclusivo, sem censura, direto pra você!"></textarea>
+        </div>
+        <div class="field full">
+          <label>Temporizador da oferta</label>
+          <div class="price-sync-row">
+            <div class="field">
+              <input id="pOfferTimerValue" type="number" min="0" step="1" placeholder="Ex: 24">
+            </div>
+            <div class="field">
+              <select id="pOfferTimerUnit" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+                <option value="h">Horas</option>
+                <option value="m">Minutos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-dim);margin:-8px 0 16px">O contador começa a contar quando a pessoa entra na página e reinicia sozinho ao zerar (cada visitante vê sua própria contagem).</div>
+        <div style="font-size:12px;color:var(--text-dim);margin:-8px 0 16px">Deixe em branco para não exibir esse bloco na página.</div>
+
+        <div class="field full">
+          <label>Card de oferta em destaque</label>
+          <select id="pShowOffer" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+            <option value="1">Mostrar</option>
+            <option value="0">Ocultar</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Plano 1 mês</label>
+          <select id="pShowPlan1m" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+            <option value="1">Mostrar</option>
+            <option value="0">Ocultar</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Plano 3 meses</label>
+          <select id="pShowPlan3m" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+            <option value="1">Mostrar</option>
+            <option value="0">Ocultar</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Plano 12 meses</label>
+          <select id="pShowPlan12m" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+            <option value="1">Mostrar</option>
+            <option value="0">Ocultar</option>
+          </select>
+        </div>
+        <div style="font-size:12px;color:var(--text-dim);margin:-8px 0 16px">Use isso pra combinar, por exemplo: oferta em destaque + só o plano 3 meses e 12 meses (sem repetir o 1 mês).</div>
+
+        <div class="section-divider" style="margin-top:20px">Benefícios do modal de pagamento</div>
+        <div class="field">
+          <label>Benefício 1</label>
+          <input id="pBenefit1" type="text" placeholder="Acesso ao conteúdo">
+        </div>
+        <div class="field">
+          <label>Benefício 2</label>
+          <input id="pBenefit2" type="text" placeholder="Chat exclusivo com o criador">
+        </div>
+        <div class="field">
+          <label>Benefício 3</label>
+          <input id="pBenefit3" type="text" placeholder="Cancele a qualquer hora">
+        </div>
+
+        <button class="btn btn-save btn-sm" style="margin-top:8px" onclick="saveProfile()">💾 Salvar todas as configurações</button>
+      </div>
+
+      <!-- PIX / Gateway -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">💳</span> Configurações de PIX</div></div>
+
+        <!-- Seletor de gateway -->
+        <div class="form-row">
+          <div class="field full">
+            <label>Gateway de pagamento</label>
+            <select id="pGateway" onchange="onGatewayChange()" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+              <option value="syncpay">SyncPayments</option>
+              <option value="nexuspag">NexusPag</option>
+              <option value="asaas">Asaas</option>
+              <option value="efibank">EfiBank</option>
+              <option value="primepag">PrimePag</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>URL do seu site <span style="font-weight:400;color:var(--text-dim)">(ex: https://seusite.netlify.app)</span></label>
+            <input id="pSiteUrl" type="text" placeholder="https://seusite.netlify.app" oninput="onSiteUrlChange()">
+            <div class="field-hint">Usado para gerar a URL do webhook automaticamente</div>
+          </div>
+          <div class="field full">
+            <label>URL do webhook <span style="font-weight:400;color:var(--text-dim)">(copie e cole no painel do gateway)</span></label>
+            <input id="pWebhookUrl" type="text" readonly style="color:var(--accent2,#4fc3f7);cursor:text">
+          </div>
+        </div>
+
+        <!-- Campos: SyncPayments -->
+        <div id="gw-syncpay" class="gw-fields form-row">
+          <div class="field">
+            <label>Client ID</label>
+            <input id="pSyncpayClientId" type="text" placeholder="89210cff-...">
+            <div class="field-hint">Painel SyncPayments → Developer API → Client ID</div>
+          </div>
+          <div class="field">
+            <label>Client Secret</label>
+            <input id="pSyncpayClientSecret" type="password" placeholder="dadc1b2c-...">
+            <div class="field-hint">Painel SyncPayments → Developer API → Client Secret</div>
+          </div>
+        </div>
+
+        <!-- Campos: NexusPag -->
+        <div id="gw-nexuspag" class="gw-fields form-row" style="display:none">
+          <div class="field full">
+            <label>API Key</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="pNexuspagApiKey" type="password" placeholder="nxp_live_..." style="flex:1">
+              <button type="button" onclick="toggleKeyVisibility('pNexuspagApiKey', this)" style="padding:8px 12px;background:var(--card2,#2a2a2a);border:1px solid var(--border,#333);border-radius:8px;color:var(--text,#fff);cursor:pointer;font-size:12px;white-space:nowrap">👁 Revelar</button>
+            </div>
+            <div class="field-hint">Painel NexusPag → Integrações → Credenciais API → copie a chave completa</div>
+          </div>
+          <div class="field full">
+            <label>Webhook Secret <span style="font-weight:400;color:var(--text-dim)">(opcional — para validar assinatura HMAC)</span></label>
+            <input id="pNexuspagWebhookSecret" type="password" placeholder="nxps_dad01e0d...">
+            <div class="field-hint">Painel NexusPag → Integrações → Webhooks → Rotacionar secret</div>
+          </div>
+          <div class="field full">
+            <label>Ambiente</label>
+            <select id="pNexuspagSandbox" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+              <option value="0">Produção (live)</option>
+              <option value="1">Sandbox (testes)</option>
+            </select>
+            <div class="field-hint">Use Sandbox para testar sem cobrar de verdade</div>
+          </div>
+        </div>
+
+        <!-- Campos: Asaas -->
+        <div id="gw-asaas" class="gw-fields form-row" style="display:none">
+          <div class="field full">
+            <label>API Key</label>
+            <input id="pAsaasApiKey" type="password" placeholder="$aact_...">
+            <div class="field-hint">Painel Asaas → Integrações → API Key</div>
+          </div>
+          <div class="field">
+            <label>Ambiente</label>
+            <select id="pAsaasSandbox" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+              <option value="">Produção</option>
+              <option value="1">Sandbox (testes)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Campos: EfiBank -->
+        <div id="gw-efibank" class="gw-fields form-row" style="display:none">
+          <div class="field">
+            <label>Client ID</label>
+            <input id="pEfibankClientId" type="text" placeholder="Client_Id_...">
+            <div class="field-hint">Painel EfiBank → API → Credenciais</div>
+          </div>
+          <div class="field">
+            <label>Client Secret</label>
+            <input id="pEfibankClientSecret" type="password" placeholder="Client_Secret_...">
+          </div>
+          <div class="field">
+            <label>Chave PIX</label>
+            <input id="pEfibankPixKey" type="text" placeholder="sua@chave.pix">
+            <div class="field-hint">Chave PIX cadastrada na conta EfiBank</div>
+          </div>
+          <div class="field">
+            <label>Ambiente</label>
+            <select id="pEfibankSandbox" style="width:100%;padding:10px 12px;background:var(--surface2,#111);border:1px solid var(--border,#222);border-radius:8px;color:var(--text,#fff);font-size:14px;">
+              <option value="">Produção</option>
+              <option value="1">Homologação (testes)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Campos: PrimePag -->
+        <div id="gw-primepag" class="gw-fields form-row" style="display:none">
+          <div class="field">
+            <label>Client ID</label>
+            <input id="pPrimepagClientId" type="text" placeholder="Client ID">
+            <div class="field-hint">Painel PrimePag → API → Credenciais</div>
+          </div>
+          <div class="field">
+            <label>Client Secret</label>
+            <input id="pPrimepagClientSecret" type="password" placeholder="Client Secret">
+          </div>
+        </div>
+
+        <button class="btn btn-save btn-sm" style="margin-top:16px" onclick="saveProfile()">💾 Salvar configurações de PIX</button>
+      </div>
+
+    </div><!-- /tab-perfil -->
+
+    <!-- ══════════════ TAB: SINGLE ══════════════ -->
+    <div id="tab-single" style="display:none">
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">+</span> Adicionar mídia</div></div>
+        <div class="form-row">
+          <div class="field full">
+            <label>URL da mídia (vídeo ou foto) *</label>
+            <input id="fUrl" type="url" placeholder="https://cdn.exemplo.com/video.mp4" oninput="autoCaptureThumbnail(this.value)">
+          </div>
+          <div class="field full">
+            <label>URL do thumbnail (opcional) <span id="fThumbStatus" style="font-weight:400;color:var(--accent);font-size:11px;margin-left:6px;"></span></label>
+            <input id="fThumb" type="url" placeholder="Preenchido automaticamente ao colar URL do vídeo">
+            <div id="fThumbPreview" style="display:none;margin-top:8px;border-radius:8px;overflow:hidden;max-width:200px;aspect-ratio:16/9;background:#000;">
+              <img id="fThumbImg" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+          </div>
+          <div class="field">
+            <label>Título (opcional)</label>
+            <input id="fTitle" type="text" placeholder="Vídeo exclusivo 1">
+          </div>
+          <div class="field">
+            <label>Tipo *</label>
+            <select id="fType">
+              <option value="video">🎥 Vídeo</option>
+              <option value="photo">🖼️ Foto</option>
+              <option value="paid">💰 Pago (pack)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Visibilidade</label>
+            <select id="fFree">
+              <option value="false">🔒 Apenas assinantes</option>
+              <option value="true">🌐 Grátis (preview)</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:8px;max-width:180px" onclick="addMedia()" id="btnAdd">Adicionar</button>
+      </div>
+    </div>
+
+    <!-- ══════════════ TAB: BULK ══════════════ -->
+    <div id="tab-bulk" style="display:none">
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">📋</span> Adicionar em massa</div></div>
+        <div class="form-row">
+          <div class="field full">
+            <label>URLs (uma por linha)</label>
+            <textarea id="bulkUrls" placeholder="https://cdn.exemplo.com/video1.mp4&#10;https://cdn.exemplo.com/video2.mp4&#10;https://cdn.exemplo.com/foto1.jpg&#10;..." style="min-height:160px"></textarea>
+            <div class="bulk-hint">Cole uma URL por linha. Detecta automaticamente foto/vídeo pela extensão.<br>
+            Extensões de vídeo: <code>mp4 mov avi webm mkv</code> | Foto: <code>jpg jpeg png gif webp</code></div>
+          </div>
+          <div class="field">
+            <label>Tipo padrão (se não detectar)</label>
+            <select id="bulkType">
+              <option value="video">🎥 Vídeo</option>
+              <option value="photo">🖼️ Foto</option>
+              <option value="paid">💰 Pago</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Visibilidade</label>
+            <select id="bulkFree">
+              <option value="false">🔒 Apenas assinantes</option>
+              <option value="true">🌐 Grátis (preview)</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-success btn-sm" style="margin-top:8px;max-width:200px" onclick="addBulk()" id="btnBulk">Enviar todas</button>
+        <div class="bulk-progress" id="bulkProgress">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <div class="progress-label" id="progressLabel">0 / 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ TAB: LIST ══════════════ -->
+    <div id="tab-list" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left"><span class="accent">▤</span> Mídias cadastradas</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-ghost btn-sm" id="btnToggleSelect" onclick="toggleSelectMode()">☑ Selecionar</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadMedias()">↺ Atualizar</button>
+          </div>
+        </div>
+        <!-- toolbar exclusão em massa -->
+        <div class="bulk-toolbar" id="bulkToolbar">
+          <span class="bulk-sel-count" id="bulkSelCount">0 selecionados</span>
+          <button class="btn btn-ghost btn-sm" onclick="selectAllMedias()">Selecionar tudo</button>
+          <button class="btn btn-ghost btn-sm" onclick="deselectAllMedias()">Limpar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSelectedMedias()">🗑 Apagar selecionados</button>
+        </div>
+        <!-- selecionar tudo (checkbox header) -->
+        <div class="media-select-all-row" id="selectAllRow">
+          <input type="checkbox" class="media-checkbox" id="chkSelectAll" onchange="toggleSelectAll(this.checked)">
+          <label for="chkSelectAll" style="cursor:pointer;user-select:none">Selecionar todos</label>
+        </div>
+        <div class="media-list" id="mediaList"><div class="empty">Carregando...</div></div>
+      </div>
+    </div>
+
+    <!-- ══════════════ TAB: PREVIEW ══════════════ -->
+    <div id="tab-preview" style="display:none">
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">👁️</span> Preview — o que o lead vê após comprar</div></div>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Simulação da página de entrega com as mídias cadastradas.</p>
+        <div class="device-frame">
+          <div class="device-bar">
+            <span id="previewUrl">seusite.netlify.app?token=abc123...</span>
+          </div>
+          <div class="device-screen" id="deviceScreen"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ TAB: MEU ACESSO ══════════════ -->
+    <div id="tab-meuacesso" style="display:none">
+      <div class="card">
+        <div class="card-title"><div class="card-title-left"><span class="accent">🔑</span> Gerar link de acesso</div></div>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Gere um link para você (dono) ou para enviar manualmente a alguém sem passar pelo PIX.</p>
+        <div class="form-row">
+          <div class="field">
+            <label>Validade</label>
+            <select id="tokenDays">
+              <option value="36500">♾️ Permanente</option>
+              <option value="365">📅 1 ano</option>
+              <option value="30">🗓️ 30 dias</option>
+              <option value="7">⏳ 7 dias</option>
+              <option value="1">⚡ 1 dia (teste)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Identificação (opcional)</label>
+            <input id="tokenLabel" type="text" placeholder="ex: meu-acesso, fulano">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="max-width:200px;margin-top:8px" onclick="gerarToken()" id="btnGerarToken">Gerar link</button>
+      </div>
+
+      <div class="card" id="tokenResultCard" style="display:none">
+        <div class="card-title"><div class="card-title-left"><span class="accent">✓</span> Link gerado</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;font-family:'DM Mono',monospace">URL DE ACESSO</div>
+          <div id="tokenUrlDisplay" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent2);word-break:break-all;line-height:1.6"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="copiarToken()">📋 Copiar link</button>
+          <button class="btn btn-success btn-sm" onclick="abrirToken()">🔗 Abrir agora</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:12px">💡 Salve esse link. Você pode gerar quantos quiser.</p>
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ── CONFIG: cole aqui a URL e a ANON KEY do seu projeto Supabase ──
+const SUPABASE_URL  = 'https://ackovomkgkmjfhoidwti.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFja292b21rZ2ttamZob2lkd3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDE5ODQsImV4cCI6MjA5NTU3Nzk4NH0.ofFVhY0Q7xHiekYZUiPHiDANbR8Q8W4W4RP-y9DTg0g';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let MEDIAS = [];
+let _session = null;
+
+function getSite() {
+  const input = document.getElementById('pSiteUrl');
+  if (input && input.value.trim()) {
+    return input.value.trim().replace(/\/+$/, '').replace(/^https?:\/\//, '');
+  }
+  const label = document.getElementById('siteLabel');
+  return label ? label.textContent.trim() : '';
+}
+
+// ── AUTH ──
+async function doLogin() {
+  const email    = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  const btn      = document.getElementById('loginBtn');
+  const errBox   = document.getElementById('loginError');
+  if (!email || !password) { showLoginError('Preencha e-mail e senha'); return; }
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  errBox.style.display = 'none';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent = 'Entrar';
+  if (error) { showLoginError(error.message); return; }
+  _session = data.session;
+  onLoginSuccess(data.session);
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  _session = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+async function onLoginSuccess(session) {
+  _session = session;
+  // Carrega site_url da config para exibir no badge
+  const { data } = await sb.from('site_config').select('value').eq('key','gateway_config').maybeSingle();
+  const siteUrl = data?.value?.site_url || SUPABASE_URL;
+  document.getElementById('siteLabel').textContent = siteUrl.replace('https://','');
+  document.getElementById('previewUrl').textContent = siteUrl.replace('https://','') + '?token=abc123...';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadMedias();
+  loadProfile();
+}
+
+// Verifica sessão existente ao abrir o painel
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) onLoginSuccess(session);
+})();
+
+document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+// Atualiza webhook ao digitar a URL do site
+document.addEventListener('DOMContentLoaded', () => {
+  const siteInput = document.getElementById('pSiteUrl');
+  if (siteInput) siteInput.addEventListener('input', () => {
+    const _site = getSite();
+    if (_site) { onSiteUrlChange(); }
+  });
+});
+
+// ── TABS ──
+const ALL_TABS = ['perfil','single','bulk','list','preview','meuacesso'];
+function switchTab(name) {
+  ALL_TABS.forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? '' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', ALL_TABS[i] === name);
+  });
+  if (name === 'list')    loadMedias();
+  if (name === 'preview') renderPreview();
+  if (name === 'perfil')  loadProfile();
+}
+
+// ── PROFILE ──
+async function loadProfile() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const headers = { 'Content-Type': 'application/json' };
+    if (session) headers['Authorization'] = 'Bearer ' + session.access_token;
+    const res = await fetch('/api/admin-profile', { headers });
+    if (!res.ok) return;
+    const cfg = await res.json();
+    applyProfile(cfg);
+  } catch(e) { /* ignora */ }
+}
+
+function applyProfile(cfg) {
+  setVal('pModelId',         cfg.model_id         || '');
+  setVal('pAvatarUrl',       cfg.avatar_url       || '');
+  setVal('pBannerUrl',       cfg.banner_url        || '');
+  setVal('pName',            cfg.name              || '');
+  setVal('pHandle',          cfg.handle            || '');
+  setVal('pBio',             cfg.bio               || '');
+  setVal('pOfferMsg',        cfg.offer_message     || '');
+  (function () {
+    var mins = parseFloat(cfg.offer_timer_minutes);
+    if (mins > 0) {
+      if (mins % 60 === 0) { setVal('pOfferTimerValue', String(mins / 60)); setVal('pOfferTimerUnit', 'h'); }
+      else { setVal('pOfferTimerValue', String(mins)); setVal('pOfferTimerUnit', 'm'); }
+    } else {
+      setVal('pOfferTimerValue', ''); setVal('pOfferTimerUnit', 'h');
+    }
+  })();
+  setVal('pShowOffer',       cfg.show_offer_card === false ? '0' : '1');
+  setVal('pShowPlan1m',      cfg.show_plan_1m      === false ? '0' : '1');
+  setVal('pShowPlan3m',      cfg.show_plan_3m      === false ? '0' : '1');
+  setVal('pShowPlan12m',     cfg.show_plan_12m     === false ? '0' : '1');
+  setVal('pTelegram',        cfg.telegram          || '');
+  setVal('pStatFotos',       cfg.stats_fotos       || '');
+  setVal('pStatVideos',      cfg.stats_videos      || '');
+  setVal('pStatExclusivos',  cfg.stats_exclusivos  || '');
+  setVal('pStatLikes',       cfg.stats_likes       || '');
+  setVal('pStatPostagens',   cfg.stats_postagens   || '');
+  setVal('pStatMidias',      cfg.stats_midias      || '');
+  setVal('pPlan1mFull',      cfg.plan_1m_full      || '');
+  setVal('pPlan3mFull',      cfg.plan_3m_full      || '');
+  setVal('pPlan12mFull',     cfg.plan_12m_full     || '');
+  // Carrega preço promocional salvo diretamente, depois calcula % a partir dele
+  setTimeout(() => {
+    if (cfg.plan_1m_price)  { setVal('pPlan1m',  cfg.plan_1m_price);  syncPlan('1m','promo');  }
+    else if (cfg.plan_1m_off)  { setVal('pPlan1mOff',  cfg.plan_1m_off);  syncPlan('1m','off');  }
+    if (cfg.plan_3m_price)  { setVal('pPlan3m',  cfg.plan_3m_price);  syncPlan('3m','promo');  }
+    else if (cfg.plan_3m_off)  { setVal('pPlan3mOff',  cfg.plan_3m_off);  syncPlan('3m','off');  }
+    if (cfg.plan_12m_price) { setVal('pPlan12m', cfg.plan_12m_price); syncPlan('12m','promo'); }
+    else if (cfg.plan_12m_off) { setVal('pPlan12mOff', cfg.plan_12m_off); syncPlan('12m','off'); }
+  }, 50);
+  setVal('pBenefit1',        cfg.benefit_1         || '');
+  setVal('pBenefit2',        cfg.benefit_2         || '');
+  setVal('pBenefit3',        cfg.benefit_3         || '');
+  if (cfg.avatar_url) previewAvatar(cfg.avatar_url);
+  if (cfg.banner_url) previewBanner(cfg.banner_url);
+  // PIX
+  setVal('pSiteUrl',          cfg.site_url          || '');
+  // Gateway
+  var gw = cfg.gateway || 'syncpay';
+  setVal('pGateway', gw);
+  // SyncPay
+  setVal('pSyncpayClientId',     cfg.syncpay_client_id     || '');
+  setVal('pSyncpayClientSecret', cfg.syncpay_client_secret || '');
+  // NexusPag
+  setVal('pNexuspagApiKey',         cfg.nexuspag_api_key          || '');
+  setVal('pNexuspagWebhookSecret',  cfg.nexuspag_webhook_secret   || '');
+  setVal('pNexuspagSandbox',        cfg.nexuspag_sandbox ? '1' : '0');
+  // Asaas
+  setVal('pAsaasApiKey',    cfg.asaas_api_key    || '');
+  setVal('pAsaasSandbox',   cfg.asaas_sandbox    ? '1' : '');
+  // EfiBank
+  setVal('pEfibankClientId',     cfg.efibank_client_id     || '');
+  setVal('pEfibankClientSecret', cfg.efibank_client_secret || '');
+  setVal('pEfibankPixKey',       cfg.efibank_pix_key       || '');
+  setVal('pEfibankSandbox',      cfg.efibank_sandbox       ? '1' : '');
+  // PrimePag
+  setVal('pPrimepagClientId',     cfg.primepag_client_id     || '');
+  setVal('pPrimepagClientSecret', cfg.primepag_client_secret || '');
+  // Popula cache diretamente da config (independe de display:none nos blocos)
+  _gwCache['pSyncpayClientId']     = cfg.syncpay_client_id     || '';
+  _gwCache['pSyncpayClientSecret'] = cfg.syncpay_client_secret || '';
+  _gwCache['pNexuspagApiKey']          = cfg.nexuspag_api_key         || '';
+  _gwCache['pNexuspagWebhookSecret']   = cfg.nexuspag_webhook_secret  || '';
+  _gwCache['pNexuspagSandbox']         = cfg.nexuspag_sandbox ? '1' : '0';
+  _gwCache['pAsaasApiKey']    = cfg.asaas_api_key    || '';
+  _gwCache['pAsaasSandbox']   = cfg.asaas_sandbox    ? '1' : '';
+  _gwCache['pEfibankClientId']     = cfg.efibank_client_id     || '';
+  _gwCache['pEfibankClientSecret'] = cfg.efibank_client_secret || '';
+  _gwCache['pEfibankPixKey']       = cfg.efibank_pix_key       || '';
+  _gwCache['pEfibankSandbox']      = cfg.efibank_sandbox       ? '1' : '';
+  _gwCache['pPrimepagClientId']     = cfg.primepag_client_id     || '';
+  _gwCache['pPrimepagClientSecret'] = cfg.primepag_client_secret || '';
+  // Agora aplica o gateway selecionado (esconde/mostra bloco correto)
+  onGatewayChange();
+  // Webhook URL
+  const _site = getSite(); if (_site) { onSiteUrlChange(); }
+}
+
+function parsePrice(str) {
+  // aceita "27,90" ou "27.90"
+  return parseFloat((str || '').replace(',', '.')) || 0;
+}
+
+// syncPlan: bidirecional — editar % calcula promo; editar promo calcula %; editar normal recalcula o que tiver
+function syncPlan(plan, source) {
+  const ids = { '1m':  ['pPlan1mFull',  'pPlan1mOff',  'pPlan1m',  'disc1m'],
+                '3m':  ['pPlan3mFull',  'pPlan3mOff',  'pPlan3m',  'disc3m'],
+               '12m':  ['pPlan12mFull', 'pPlan12mOff', 'pPlan12m', 'disc12m'] };
+  const [fullId, offId, promoId, discId] = ids[plan];
+  const full  = parsePrice(getVal(fullId));
+  const offEl   = document.getElementById(offId);
+  const promoEl = document.getElementById(promoId);
+  const discEl  = document.getElementById(discId);
+  if (!offEl || !promoEl || !discEl) return;
+
+  let pct = parseFloat(offEl.value) || 0;
+  let promo = parsePrice(promoEl.value);
+
+  if (source === 'off' || (source === 'full' && pct > 0)) {
+    // % editado → calcula promo
+    if (full > 0 && pct > 0 && pct < 100) {
+      promo = full * (1 - pct / 100);
+      promoEl.value = promo.toFixed(2).replace('.', ',');
+    } else if (pct === 0) {
+      promoEl.value = '';
+    }
+  } else if (source === 'promo' || (source === 'full' && promo > 0)) {
+    // promo editado → calcula %
+    if (full > 0 && promo > 0 && promo < full) {
+      pct = Math.round((1 - promo / full) * 100 * 10) / 10; // 1 decimal
+      offEl.value = pct;
+    } else if (promo >= full) {
+      offEl.value = '';
+      pct = 0;
+    }
+  }
+
+  // atualiza preview
+  if (full > 0 && pct > 0 && promo > 0 && promo < full) {
+    const promoStr = promo.toFixed(2).replace('.', ',');
+    const fullStr  = full.toFixed(2).replace('.', ',');
+    discEl.textContent = `🏷️ De R$ ${fullStr} por R$ ${promoStr} (${Math.round(pct)}% off)`;
+  } else if (full > 0 && (!pct || !promo)) {
+    discEl.textContent = '(sem desconto)';
+  } else {
+    discEl.textContent = '';
+  }
+}
+
+async function saveProfile() {
+  const payload = {
+    model_id:         getVal('pModelId'),
+    avatar_url:       getVal('pAvatarUrl'),
+    banner_url:       getVal('pBannerUrl'),
+    name:             getVal('pName'),
+    handle:           getVal('pHandle'),
+    bio:              getVal('pBio'),
+    offer_message:    getVal('pOfferMsg'),
+    offer_timer_minutes: (function () {
+      var v = parseFloat(getVal('pOfferTimerValue'));
+      if (!v || v <= 0) return '';
+      return getVal('pOfferTimerUnit') === 'm' ? v : v * 60;
+    })(),
+    show_offer_card:  getVal('pShowOffer')    === '1',
+    show_plan_1m:     getVal('pShowPlan1m')   === '1',
+    show_plan_3m:     getVal('pShowPlan3m')   === '1',
+    show_plan_12m:    getVal('pShowPlan12m')  === '1',
+    telegram:         getVal('pTelegram'),
+    stats_fotos:      getVal('pStatFotos'),
+    stats_videos:     getVal('pStatVideos'),
+    stats_exclusivos: getVal('pStatExclusivos'),
+    stats_likes:      getVal('pStatLikes'),
+    stats_postagens:  getVal('pStatPostagens'),
+    stats_midias:     getVal('pStatMidias'),
+    plan_1m_price:    getVal('pPlan1m'),
+    plan_1m_full:     getVal('pPlan1mFull'),
+    plan_1m_off:      getVal('pPlan1mOff'),
+    plan_3m_price:    getVal('pPlan3m'),
+    plan_3m_full:     getVal('pPlan3mFull'),
+    plan_3m_off:      getVal('pPlan3mOff'),
+    plan_12m_price:   getVal('pPlan12m'),
+    plan_12m_full:    getVal('pPlan12mFull'),
+    plan_12m_off:     getVal('pPlan12mOff'),
+    benefit_1:        getVal('pBenefit1'),
+    benefit_2:        getVal('pBenefit2'),
+    benefit_3:        getVal('pBenefit3'),
+    // PIX — não salva credenciais no perfil, ficam só em gateway_config
+    site_url: getVal('pSiteUrl').replace(/\/+$/, ''),
+  };
+
+  // Salva gateway config separadamente em gateway_config
+  const rawSiteUrl = getVal('pSiteUrl').replace(/\/+$/, '');
+  const fullSiteUrl = rawSiteUrl ? (rawSiteUrl.startsWith('http') ? rawSiteUrl : 'https://' + rawSiteUrl) : '';
+  const gwPayload = {
+    site_url:              fullSiteUrl,
+    gateway:               getVal('pGateway') || 'syncpay',
+    syncpay_client_id:     getVal('pSyncpayClientId'),
+    syncpay_client_secret: getVal('pSyncpayClientSecret'),
+    nexuspag_api_key:          getVal('pNexuspagApiKey'),
+    nexuspag_webhook_secret:   getVal('pNexuspagWebhookSecret'),
+    nexuspag_sandbox:          getVal('pNexuspagSandbox') === '1',
+    asaas_api_key:         getVal('pAsaasApiKey'),
+    asaas_sandbox:         getVal('pAsaasSandbox') === '1',
+    efibank_client_id:     getVal('pEfibankClientId'),
+    efibank_client_secret: getVal('pEfibankClientSecret'),
+    efibank_pix_key:       getVal('pEfibankPixKey'),
+    efibank_sandbox:       getVal('pEfibankSandbox') === '1',
+    primepag_client_id:    getVal('pPrimepagClientId'),
+    primepag_client_secret:getVal('pPrimepagClientSecret'),
+  };
+  // Envia tudo via /api/admin-profile (salva separado por model_id)
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { showToast('Sessão expirada, faça login novamente', 'err'); return; }
+    const res = await fetch('/api/admin-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ ...payload, ...gwPayload }),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      showToast('Erro ao salvar: ' + JSON.stringify(result.error), 'err');
+    } else {
+      CURRENT_MODEL_ID = null;
+      showToast('Perfil salvo com sucesso! ✓', 'ok');
+    }
+  } catch(e) {
+    showToast('Erro de conexão ao salvar', 'err');
+  }
+}
+
+function previewAvatar(url) {
+  const img = document.getElementById('avatarPreviewImg');
+  if (!img || !url) return;
+  img.style.opacity = '0';
+  const tmp = new Image();
+  tmp.onload = () => { img.src = url; img.style.opacity = '1'; };
+  tmp.onerror = () => { img.style.opacity = '1'; };
+  tmp.src = url;
+}
+
+function previewBanner(url) {
+  const el = document.getElementById('bannerPreviewImg');
+  if (!el || !url) return;
+  el.style.opacity = '0';
+  const tmp = new Image();
+  tmp.onload = () => { el.src = url; el.style.opacity = '1'; };
+  tmp.onerror = () => { el.style.opacity = '1'; };
+  tmp.src = url;
+}
+
+// ── MODEL ID ──
+var CURRENT_MODEL_ID = null;
+
+async function getModelId() {
+  if (CURRENT_MODEL_ID) return CURRENT_MODEL_ID;
+  try {
+    const { data } = await sb.from('site_config').select('value').eq('key', 'profile').maybeSingle();
+    CURRENT_MODEL_ID = data?.value?.model_id || null;
+  } catch(e) {}
+  return CURRENT_MODEL_ID;
+}
+
+// ── LOAD MEDIAS ──
+async function loadMedias() {
+  const list = document.getElementById('mediaList');
+  if (list) list.innerHTML = '<div class="empty">Carregando...</div>';
+  try {
+    const modelId = await getModelId();
+    let query = sb.from('medias').select('*').order('created_at', { ascending: false });
+    if (modelId) query = query.eq('model_id', modelId);
+    const { data: mediaData, error: mediaErr } = await query;
+    if (mediaErr) throw mediaErr;
+    MEDIAS = mediaData || [];
+    document.getElementById('countBadge').textContent = MEDIAS.length;
+    renderList(MEDIAS);
+  } catch (e) {
+    if (list) list.innerHTML = '<div class="empty">Erro ao conectar.</div>';
+  }
+}
+
+var SELECT_MODE = false;
+var SELECTED_IDS = new Set();
+
+function renderList(medias) {
+  const list = document.getElementById('mediaList');
+  if (!list) return;
+  if (!medias.length) { list.innerHTML = '<div class="empty">Nenhuma mídia cadastrada.</div>'; return; }
+  list.innerHTML = medias.map(m => `
+    <div class="media-row${SELECTED_IDS.has(m.id) ? ' selected' : ''}" id="row-${m.id}" onclick="SELECT_MODE && toggleRowSelect('${m.id}')" style="${SELECT_MODE ? 'cursor:pointer' : ''}">
+      ${SELECT_MODE ? `<input type="checkbox" class="media-checkbox" id="chk-${m.id}" ${SELECTED_IDS.has(m.id) ? 'checked' : ''} onchange="toggleRowSelect('${m.id}')" onclick="event.stopPropagation()">` : ''}
+      <div class="media-thumb">
+        ${m.thumbnail ? `<img src="${esc(m.thumbnail)}" onerror="this.parentElement.innerHTML=makeSvgThumb(${JSON.stringify(m.title||'')})">` : (m.type === 'video' ? `<img src="${makeSvgThumb(m.title||m.url||'')}">` : typeEmoji(m.type))}
+      </div>
+      <div class="media-info">
+        <div class="media-title-text">${esc(m.title || 'Sem título')}</div>
+        <div class="media-url-text">${esc(m.url)}</div>
+      </div>
+      <div class="media-actions">
+        <span class="tag tag-${m.type}">${m.type}</span>
+        ${m.is_free ? '<span class="tag tag-free">free</span>' : ''}
+        ${!SELECT_MODE ? `<button class="btn btn-danger btn-sm" onclick="deleteMedia('${m.id}')">Remover</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleSelectMode() {
+  SELECT_MODE = !SELECT_MODE;
+  SELECTED_IDS.clear();
+  const btn = document.getElementById('btnToggleSelect');
+  const toolbar = document.getElementById('bulkToolbar');
+  const allRow = document.getElementById('selectAllRow');
+  const chkAll = document.getElementById('chkSelectAll');
+  if (SELECT_MODE) {
+    btn.textContent = '✕ Cancelar';
+    btn.classList.add('btn-primary');
+    toolbar.classList.add('visible');
+    allRow.classList.add('visible');
+    if (chkAll) chkAll.checked = false;
+  } else {
+    btn.textContent = '☑ Selecionar';
+    btn.classList.remove('btn-primary');
+    toolbar.classList.remove('visible');
+    allRow.classList.remove('visible');
+  }
+  updateBulkCount();
+  renderList(MEDIAS);
+}
+
+function toggleRowSelect(id) {
+  if (!SELECT_MODE) return;
+  const row = document.getElementById('row-' + id);
+  const chk = document.getElementById('chk-' + id);
+  if (SELECTED_IDS.has(id)) {
+    SELECTED_IDS.delete(id);
+    if (row) row.classList.remove('selected');
+    if (chk) chk.checked = false;
+  } else {
+    SELECTED_IDS.add(id);
+    if (row) row.classList.add('selected');
+    if (chk) chk.checked = true;
+  }
+  updateBulkCount();
+  const chkAll = document.getElementById('chkSelectAll');
+  if (chkAll) chkAll.checked = SELECTED_IDS.size === MEDIAS.length;
+}
+
+function toggleSelectAll(checked) {
+  if (checked) selectAllMedias(); else deselectAllMedias();
+}
+
+function selectAllMedias() {
+  MEDIAS.forEach(m => SELECTED_IDS.add(m.id));
+  const chkAll = document.getElementById('chkSelectAll');
+  if (chkAll) chkAll.checked = true;
+  updateBulkCount();
+  renderList(MEDIAS);
+}
+
+function deselectAllMedias() {
+  SELECTED_IDS.clear();
+  const chkAll = document.getElementById('chkSelectAll');
+  if (chkAll) chkAll.checked = false;
+  updateBulkCount();
+  renderList(MEDIAS);
+}
+
+function updateBulkCount() {
+  const el = document.getElementById('bulkSelCount');
+  if (el) el.textContent = SELECTED_IDS.size + ' selecionado' + (SELECTED_IDS.size !== 1 ? 's' : '');
+}
+
+async function deleteSelectedMedias() {
+  if (!SELECTED_IDS.size) { showToast('Nenhuma mídia selecionada', 'err'); return; }
+  const n = SELECTED_IDS.size;
+  if (!confirm(`Remover ${n} mídia${n > 1 ? 's' : ''} selecionada${n > 1 ? 's' : ''}?`)) return;
+  const ids = [...SELECTED_IDS];
+  const toolbar = document.getElementById('bulkToolbar');
+  // Dim selected rows
+  ids.forEach(id => { const r = document.getElementById('row-' + id); if (r) r.style.opacity = '0.4'; });
+  try {
+    const { error } = await sb.from('medias').delete().in('id', ids);
+    if (!error) {
+      showToast(`${n} mídia${n > 1 ? 's' : ''} removida${n > 1 ? 's' : ''} ✓`, 'ok');
+      SELECTED_IDS.clear();
+      SELECT_MODE = false;
+      const btn = document.getElementById('btnToggleSelect');
+      if (btn) { btn.textContent = '☑ Selecionar'; btn.classList.remove('btn-primary'); }
+      if (toolbar) toolbar.classList.remove('visible');
+      const allRow = document.getElementById('selectAllRow');
+      if (allRow) allRow.classList.remove('visible');
+      await loadMedias();
+    } else {
+      showToast('Erro ao remover: ' + error.message, 'err');
+      ids.forEach(id => { const r = document.getElementById('row-' + id); if (r) r.style.opacity = '1'; });
+    }
+  } catch { showToast('Erro de conexão', 'err'); }
+}
+
+// ── ADD SINGLE ──
+// ── AUTO THUMBNAIL ────────────────────────────────────────────
+var _thumbCaptureTimer = null;
+function autoCaptureThumbnail(url) {
+  var status    = document.getElementById('fThumbStatus');
+  var preview   = document.getElementById('fThumbPreview');
+  var thumbInput = document.getElementById('fThumb');
+
+  clearTimeout(_thumbCaptureTimer);
+
+  if (!url || !url.match(/\.(mp4|webm|mov)/i)) {
+    if (status)  status.textContent = '';
+    if (preview) preview.style.display = 'none';
+    return;
+  }
+
+  if (thumbInput.value.trim()) return;
+
+  if (status) status.textContent = '⏳ Gerando thumbnail...';
+
+  // ── helpers ──────────────────────────────────────────────────
+  function applyThumb(dataUrl, label) {
+    thumbInput.value = dataUrl;
+    if (status)  status.textContent = label;
+    if (preview) {
+      document.getElementById('fThumbImg').src = dataUrl;
+      preview.style.display = 'block';
+    }
+  }
+
+  // Fase 3 — SVG placeholder com gradiente (sempre funciona)
+  function fallbackSvgThumb() {
+    var filename = url.split('/').pop().split('?')[0].replace(/\.[^.]+$/, '') || 'Vídeo';
+    var label    = decodeURIComponent(filename).slice(0, 28);
+    var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1a1a1a"/>
+          <stop offset="100%" stop-color="#2d1a0e"/>
+        </linearGradient>
+      </defs>
+      <rect width="320" height="180" fill="url(#g)" rx="8"/>
+      <polygon points="128,70 128,110 168,90" fill="#f6841c" opacity=".9"/>
+      <text x="160" y="140" font-family="sans-serif" font-size="12" fill="#aaa" text-anchor="middle">${label}</text>
+    </svg>`;
+    var b64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+    applyThumb(b64, '🎨 Capa gerada');
+  }
+
+  // Fase 2 — microlink.io (screenshot da URL do vídeo)
+  async function tryMicrolink() {
+    try {
+      var apiUrl = 'https://api.microlink.io/?url=' + encodeURIComponent(url) + '&screenshot=true&meta=false&embed=screenshot.url&type=jpeg';
+      var res = await fetch(apiUrl);
+      var json = await res.json();
+      var imgUrl = json?.data?.screenshot?.url;
+      if (imgUrl) {
+        applyThumb(imgUrl, '✅ Thumbnail gerada!');
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  }
+
+  // Fase 1 — canvas (funciona se o servidor tiver CORS liberado)
+  _thumbCaptureTimer = setTimeout(function() {
+    var vid = document.createElement('video');
+    vid.crossOrigin = 'anonymous';
+    vid.preload = 'metadata';
+    vid.muted = true;
+    vid.src = url + '#t=1';
+    var done = false;
+
+    vid.addEventListener('loadedmetadata', function() { vid.currentTime = 1; });
+
+    vid.addEventListener('seeked', function() {
+      if (done) return; done = true;
+      try {
+        var canvas = document.createElement('canvas');
+        canvas.width  = vid.videoWidth  || 320;
+        canvas.height = vid.videoHeight || 180;
+        canvas.getContext('2d').drawImage(vid, 0, 0, canvas.width, canvas.height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        if (dataUrl && dataUrl.length > 2000) {
+          applyThumb(dataUrl, '✅ Thumbnail gerada!');
+        } else {
+          throw new Error('blank');
+        }
+      } catch(e) {
+        // CORS falhou → tenta microlink
+        if (status) status.textContent = '⏳ Buscando capa...';
+        tryMicrolink().then(function(ok) { if (!ok) fallbackSvgThumb(); });
+      }
+    });
+
+    vid.addEventListener('error', function() {
+      if (done) return; done = true;
+      if (status) status.textContent = '⏳ Buscando capa...';
+      tryMicrolink().then(function(ok) { if (!ok) fallbackSvgThumb(); });
+    });
+
+    // timeout de segurança: se o vídeo não carregar em 6s, vai pro microlink
+    setTimeout(function() {
+      if (!done) { done = true; tryMicrolink().then(function(ok) { if (!ok) fallbackSvgThumb(); }); }
+    }, 6000);
+  }, 600);
+}
+
+async function addMedia() {
+  const url    = document.getElementById('fUrl').value.trim();
+  const thumb  = document.getElementById('fThumb').value.trim();
+  const title  = document.getElementById('fTitle').value.trim();
+  const type   = document.getElementById('fType').value;
+  const isFree = document.getElementById('fFree').value === 'true';
+  if (!url) { showToast('URL é obrigatória', 'err'); return; }
+  const btn = document.getElementById('btnAdd');
+  btn.disabled = true; btn.textContent = 'Adicionando...';
+  const ok = await postMedia({ url, thumbnail: thumb || null, title: title || null, type, is_free: isFree });
+  if (ok) {
+    showToast('Mídia adicionada! ✓', 'ok');
+    document.getElementById('fUrl').value = '';
+    document.getElementById('fThumb').value = '';
+    document.getElementById('fTitle').value = '';
+    var p = document.getElementById('fThumbPreview'); if(p) p.style.display='none';
+    var s = document.getElementById('fThumbStatus'); if(s) s.textContent='';
+    await loadMedias();
+  }
+  btn.disabled = false; btn.textContent = 'Adicionar';
+}
+
+// ── ADD BULK ──
+async function addBulk() {
+  const raw        = document.getElementById('bulkUrls').value.trim();
+  const defaultType = document.getElementById('bulkType').value;
+  const isFree     = document.getElementById('bulkFree').value === 'true';
+  const urls = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0 && l.startsWith('http'));
+  if (!urls.length) { showToast('Nenhuma URL válida encontrada', 'err'); return; }
+  const btn = document.getElementById('btnBulk');
+  const progress = document.getElementById('bulkProgress');
+  const fill  = document.getElementById('progressFill');
+  const label = document.getElementById('progressLabel');
+  btn.disabled = true; progress.style.display = 'block';
+  let done = 0, errors = 0;
+  for (const url of urls) {
+    const type = detectType(url) || defaultType;
+    const ok = await postMedia({ url, type, is_free: isFree, title: null, thumbnail: null });
+    if (!ok) errors++;
+    done++;
+    const pct = Math.round((done / urls.length) * 100);
+    fill.style.width = pct + '%';
+    label.textContent = `${done} / ${urls.length} — ${errors} erro(s)`;
+    await sleep(150);
+  }
+  showToast(`${done - errors} mídias adicionadas! ✓`, errors ? 'err' : 'ok');
+  document.getElementById('bulkUrls').value = '';
+  btn.disabled = false;
+  setTimeout(() => { progress.style.display = 'none'; }, 3000);
+  await loadMedias();
+}
+
+function detectType(url) {
+  if (/turbo\.cr\/embed|streamtape\.com\/e\/|mixdrop\.co\/e\/|\/embed\//i.test(url)) return 'video';
+  const ext = url.split('?')[0].split('.').pop().toLowerCase();
+  if (['mp4','mov','avi','webm','mkv','m4v'].includes(ext)) return 'video';
+  if (['jpg','jpeg','png','gif','webp','avif'].includes(ext)) return 'photo';
+  return null;
+}
+
+async function postMedia(payload) {
+  try {
+    const modelId = await getModelId();
+    if (modelId) payload.model_id = modelId;
+    const { data, error } = await sb.from('medias').insert(payload).select().single();
+    if (error) { console.error(error); return false; }
+    return !!data?.id;
+  } catch { return false; }
+}
+
+// ── DELETE ──
+async function deleteMedia(id) {
+  if (!confirm('Remover essa mídia?')) return;
+  const row = document.getElementById('row-' + id);
+  if (row) row.style.opacity = '0.4';
+  try {
+    const modelId = await getModelId();
+    let delQuery = sb.from('medias').delete().eq('id', id);
+    if (modelId) delQuery = delQuery.eq('model_id', modelId);
+    const { error } = await delQuery;
+    if (!error) { showToast('Removida ✓', 'ok'); await loadMedias(); }
+    else { showToast('Erro ao remover: ' + error.message, 'err'); if (row) row.style.opacity = '1'; }
+  } catch { showToast('Erro de conexão', 'err'); if (row) row.style.opacity = '1'; }
+}
+
+// ── PREVIEW ──
+function renderPreview() {
+  const screen = document.getElementById('deviceScreen');
+  const medias = MEDIAS.length ? MEDIAS : fakePreviews();
+  const gridItems = medias.slice(0, 6).map(m => {
+    if (m.type === 'video' || m.type === 'paid') {
+      return `<div style="aspect-ratio:9/16;background:#efe7de;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+        ${m.thumbnail ? `<img src="${esc(m.thumbnail)}" style="width:100%;height:100%;object-fit:cover;position:absolute">` : ''}
+        <span style="position:relative;font-size:20px">▶</span>
+      </div>`;
+    }
+    return `<div style="aspect-ratio:9/16;background:#efe7de;border-radius:8px;overflow:hidden">
+      ${m.url ? `<img src="${esc(m.url)}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">` : ''}
+    </div>`;
+  }).join('');
+  screen.innerHTML = `
+    <div style="height:50px;background:#f9f6f2;border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">
+      <span style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#111">privacy<span style="color:#f6841c">.</span></span>
+    </div>
+    <div style="background:#fff;border-radius:18px;margin:10px;overflow:hidden">
+      <div style="height:70px;background:linear-gradient(135deg,#2d1a0a,#4a2808);position:relative;overflow:hidden">${getVal('pBannerUrl') ? `<img src="${esc(getVal('pBannerUrl'))}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0" onerror="this.style.display='none'">` : ''}</div>
+      <img style="width:60px;height:60px;border-radius:50%;border:3px solid #f9f6f2;margin:-30px 0 0 14px;background:#ccc;object-fit:cover" src="${esc(getVal('pAvatarUrl'))}" onerror="this.style.background='#ccc';this.removeAttribute('src')" alt="">
+      <div style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#111;padding:6px 14px 2px">${esc(getVal('pName') || 'Larissa Vitoria')} ✓</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#888;padding:0 14px 12px">${esc(getVal('pHandle') || '@larivictoria')}</div>
+    </div>
+    <div style="background:#fff5ec;margin:10px;border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:24px;margin-bottom:6px">🎉</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#111;margin-bottom:4px">Acesso liberado!</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#888">${medias.length} mídias disponíveis para você</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px;padding-bottom:16px">${gridItems}</div>
+  `;
+}
+
+function fakePreviews() {
+  return Array(6).fill(0).map((_, i) => ({ type: i % 2 === 0 ? 'video' : 'photo', url: '', thumbnail: '' }));
+}
+
+// ── TOKEN MANUAL ──
+let lastTokenUrl = '';
+async function gerarToken() {
+  const days  = document.getElementById('tokenDays').value;
+  const label = document.getElementById('tokenLabel').value.trim() || 'acesso-manual';
+  const btn   = document.getElementById('btnGerarToken');
+  btn.disabled = true; btn.textContent = 'Gerando...';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { showToast('Sessão expirada, faça login novamente', 'err'); return; }
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/create-token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ days: parseInt(days), label })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      // Monta URL usando o site_url salvo localmente, ignorando o retorno da Edge Function
+      var localSiteUrl = (getVal('pSiteUrl') || '').replace(/\/+$/, '');
+      var baseUrl = localSiteUrl.startsWith('http') ? localSiteUrl : 'https://' + localSiteUrl;
+      lastTokenUrl = baseUrl + '/members.html?token=' + data.token;
+      document.getElementById('tokenUrlDisplay').textContent = lastTokenUrl;
+      document.getElementById('tokenResultCard').style.display = '';
+      showToast('Link gerado! ✓', 'ok');
+    } else {
+      showToast('Erro: ' + JSON.stringify(data.error), 'err');
+    }
+  } catch { showToast('Erro de conexão', 'err'); }
+  btn.disabled = false; btn.textContent = 'Gerar link';
+}
+function copiarToken() {
+  navigator.clipboard.writeText(lastTokenUrl).then(() => showToast('Copiado! ✓', 'ok'));
+}
+function abrirToken() { window.open(lastTokenUrl, '_blank'); }
+
+// ── UTILS ──
+function typeEmoji(type) { return type === 'video' ? '🎥' : type === 'photo' ? '🖼️' : '💰'; }
+
+function makeSvgThumb(label) {
+  var text = (label || 'Vídeo').slice(0, 22);
+  var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#2d1a0e"/></linearGradient></defs><rect width="320" height="180" fill="url(#g)" rx="8"/><polygon points="128,70 128,110 168,90" fill="#f6841c" opacity=".9"/><text x="160" y="145" font-family="sans-serif" font-size="13" fill="#999" text-anchor="middle">${text}</text></svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+function enc(s) { return encodeURIComponent(s); }
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function setVal(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+function getVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+// ── GATEWAY CHANGE ───────────────────────────────────────────
+// ── GATEWAY CHANGE ───────────────────────────────────────────
+
+// Cache em memória para preservar valores ao trocar de gateway
+var _gwCache = {};
+
+// Lê os campos do gateway atual e salva no cache
+function _saveCurrentGwToCache() {
+  document.querySelectorAll('.gw-fields').forEach(function(el) {
+    el.querySelectorAll('input, select').forEach(function(input) {
+      if (input.id) {
+        _gwCache[input.id] = input.type === 'checkbox' ? input.checked : input.value;
+      }
+    });
+  });
+}
+
+// Restaura valores do cache para um bloco de gateway
+function _restoreGwFromCache(gwEl) {
+  gwEl.querySelectorAll('input, select').forEach(function(input) {
+    if (input.id && _gwCache[input.id] !== undefined) {
+      if (input.type === 'checkbox') input.checked = _gwCache[input.id];
+      else input.value = _gwCache[input.id];
+    }
+  });
+}
+
+function toggleKeyVisibility(fieldId, btn) {
+  var input = document.getElementById(fieldId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈 Ocultar';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁 Revelar';
+  }
+}
+
+function onGatewayChange() {
+  // Salva o que está nos campos ANTES de esconder
+  _saveCurrentGwToCache();
+
+  var gw = getVal('pGateway') || 'syncpay';
+
+  // Esconde todos os blocos
+  document.querySelectorAll('.gw-fields').forEach(function(el) {
+    el.style.display = 'none';
+  });
+
+  // Mostra o bloco do gateway selecionado e restaura do cache
+  var target = document.getElementById('gw-' + gw);
+  if (target) {
+    target.style.display = '';
+    _restoreGwFromCache(target);
+  }
+
+  onSiteUrlChange();
+}
+
+function onSiteUrlChange() {
+  var site = (getVal('pSiteUrl') || '').replace(/\/+$/, '');
+  if (!site) return;
+  var base = site.startsWith('http') ? site : 'https://' + site;
+  setVal('pWebhookUrl', base + '/api/pix-webhook');
+}
+
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = '', 3000);
+}
+</script>
+</body>
+</html>

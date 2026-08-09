@@ -1,0 +1,3262 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy</title>
+<link rel="icon" href="images/faviconV2.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== FONTS (local - Poppins) ===== */
+@font-face{
+  font-family:"Poppins";
+  src:url("fonts/Poppins-Regular.woff2") format("woff2");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Poppins";
+  src:url("fonts/Poppins-Medium.woff2") format("woff2");
+  font-weight:500;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Poppins";
+  src:url("fonts/Poppins-SemiBold.woff2") format("woff2");
+  font-weight:600;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* =============================
+   THEME / VARIABLES
+============================== */
+:root{
+  --bg:#f9f6f2;
+
+  --surface:#f7f7f8;
+  --surface-2:#eaeaea;
+
+  --text:#111;
+  --text-dim:#666;
+
+  --brand:#ffd89c;
+  --brand-2:#ffbfa3;
+  --accent:rgb(246,132,44);
+
+  --content:960px;
+
+  /* ajustes “finais” que você já tinha */
+  --banner-h:89px;
+  --avatar-size:80px;
+  --avatar-top:-66px;
+
+  --stats-left:131px;
+  --meta-gap:12px;
+  --icon-gap:5px;
+  --icon-size:17px;
+  --num-size:14px;
+  --num-line:19px;
+  --num-color:rgb(51,51,51);
+
+  --muted-on-dark:#cfd6dd;
+}
+
+/* =============================
+   RESET
+============================== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  padding:0px;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.6 "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+a{color:inherit;text-decoration:none}
+img,video{display:block;max-width:100%}
+.wrap{max-width:var(--content);margin:0 auto;padding:0 16px}
+
+/* remove sombras (flat) */
+.profile-card,.sub-btn,.post,.tabs,.avatar,.pay-card,.ob-card,.pay-avatar,.avatar-mini{box-shadow:none!important}
+
+/* =========================
+   HEADER (Privacy-like)
+========================= */
+.appbar{
+  height:66px;
+  background:#f9f6f2;
+  position:sticky;
+  top:0;
+  z-index:9999;
+}
+.appbar::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:1px;
+  background:rgba(0,0,0,.08);
+  pointer-events:none;
+}
+.wrapper-container{
+  height:66px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+/* Espaço entre header e primeiro card (igual Privacy) */
+main.wrap{
+  padding-top: 1px; /* ajuste fino: 12–16px */
+}
+.brand-logo{
+  height:18px;
+  width:auto;
+  display:block;
+}
+
+/* globo (clicável via select invisível) */
+.right-container{
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+}
+.select-wrapper{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  background:transparent;
+  border:0;
+  position:relative;
+}
+#cultureSelectHeader{
+  position:absolute;
+  inset:0;
+  width:34px;
+  height:34px;
+  opacity:0;
+  cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.select-wrapper-img{
+  width:22px;
+  height:22px;
+  color: rgb(153,153,153); /* 🔥 cinza Privacy */
+  opacity:1;
+  pointer-events:none;
+  filter:none !important;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+.profile-card{
+  background:#fff;
+  border-radius:23px;
+  overflow:hidden;
+  margin-top:0px;
+  position:relative;
+}
+
+/* banner */
+.cover{
+  height:var(--banner-h);
+  background:#0d0d0e;
+  position:relative;
+  overflow:hidden;
+  border-top-left-radius:23px;
+  border-top-right-radius:23px;
+}
+.cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:none;
+  transform:none;
+}
+
+/* stats topo */
+.edge-stats{
+  display:flex;
+  align-items:center;
+  padding-left:var(--stats-left);
+  gap:var(--meta-gap);
+  margin-top:8px;
+  white-space:nowrap;
+  overflow:hidden;
+
+  color:var(--num-color);
+  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size:var(--num-size);
+  line-height:var(--num-line);
+}
+.edge-stats .meta{
+  display:flex;
+  align-items:center;
+  gap:var(--icon-gap);
+}
+.edge-stats .ico{
+  width:var(--icon-size);
+  height:var(--icon-size);
+  opacity:.85;
+  object-fit:contain;
+  flex-shrink:0;
+}
+.edge-stats .meta strong{
+  font-weight:400;
+  font-size:var(--num-size);
+  line-height:var(--num-line);
+  color:var(--num-color);
+}
+
+/* avatar */
+.avatar-wrap{position:relative;z-index:10;height:0}
+.avatar{
+  position:absolute;
+  left:16px;
+  top:var(--avatar-top);
+  width:var(--avatar-size);
+  height:var(--avatar-size);
+  border-radius:999px;
+  overflow:hidden;
+  border:4px solid #fff;     /* anel branco */
+  outline:none;
+  background:#fff;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+.card-body{padding:18px}
+.name{
+  font-size:1.24rem;
+  font-weight:800;
+  margin-top:-3px;
+}
+.name.verified{
+  display:inline-flex;
+  align-items:center;
+  gap:0;
+}
+.verified-icon{
+  width:18px;
+  height:18px;
+  flex-shrink:0;
+  filter:invert(56%) sepia(74%) saturate(749%)
+          hue-rotate(345deg) brightness(101%) contrast(101%);
+}
+.handle{
+  font-size:14px;
+  font-weight:400;
+  line-height:16px;
+  margin-top:2px;
+  position:relative;
+  top:-2px;
+  color:#666;
+}
+
+/* bio + ler mais */
+.bio-text{
+  color:var(--text);
+  font-size:14px;
+  line-height:1.15;
+  margin-top:6px;
+  margin-bottom:4px;
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.profile-card.expanded .bio-text{-webkit-line-clamp:unset}
+.toggle-bio{
+  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size:14px;
+  font-weight:500;
+  line-height:16px;
+  color:var(--accent);
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  padding:0;
+  margin-left:2px;
+  position:relative;
+  top:-2px;
+}
+
+/* social (círculo clean) */
+.social-below-bio{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:15px;
+  margin-bottom:14px;
+}
+.social-below-bio .social-ico{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:rgb(249,246,242);
+  border:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+.social-below-bio .social-ico img{
+  width:16px;
+  height:16px;
+  display:block;
+  object-fit:contain;
+  opacity:.75;
+}
+
+/* =========================
+   PLANS / BUTTONS
+========================= */
+.plans{margin-top:6px}
+.plans-title{margin:0 0 10px;font-size:1rem}
+.plan-grid{display:block}
+
+.sub-btn{
+  min-height:56px;
+  height:auto;
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.06);
+  background:linear-gradient(90deg,var(--brand),var(--brand-2));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  color:#000;
+}
+.sub-btn .left{font-weight:700}
+.sub-btn .price{font-weight:800}
+.sub-note{font-weight:600;opacity:.75}
+
+/* =========================
+   PROMOS (estrutura) + animação
+========================= */
+.section-promos{margin-top:12px}
+.promos-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  cursor:pointer;
+}
+.promos-head h3{margin:0;font-size:1rem}
+.promos-toggle{
+  width:34px;height:34px;
+  border-radius:999px;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+.promos-toggle .chev{
+  width:22px;height:22px;
+  fill:rgba(0,0,0,.65);
+  transition:transform .22s ease;
+}
+.section-promos.is-collapsed .chev{transform:rotate(-180deg)}
+
+.promos-body{
+  overflow:hidden;
+  height:auto;
+}
+
+/* =========================
+   TABS / POST
+========================= */
+.tabs{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  background:var(--surface);
+  border-radius:22px;
+  margin-top:16px;
+  border:1px solid rgba(0,0,0,.06);
+  align-items:center;
+}
+.tab{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  color:var(--text-dim);
+}
+.tab.active{
+  color:var(--accent);
+  box-shadow:inset 0 -2px 0 var(--accent);
+}
+
+.post{
+  margin-top:18px;
+  background:var(--surface);
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.06);
+}
+.post-head{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  background:var(--surface-2);
+}
+.avatar-mini{
+  height:32px;
+  width:32px;
+  border-radius:50%;
+  overflow:hidden;
+}
+.avatar-mini img{width:100%;height:100%;object-fit:cover}
+
+/* ===================
+   PAY MODAL
+=================== */
+.pay-overlay{position:fixed;inset:0;z-index:9999;display:none}
+.pay-overlay.show{display:block}
+.pay-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
+
+.pay-card{
+  position:fixed;
+  left:50%;
+  top:6%;
+  transform:translateX(-50%);
+  width:min(560px,94vw);
+  max-height:88vh;
+  background:var(--surface);
+  color:var(--text);
+  border-radius:18px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.pay-header{
+  height:110px;
+  position:relative;
+  overflow:hidden;
+  border-top-left-radius:18px;
+  border-top-right-radius:18px;
+}
+.pay-header img{width:100%;height:100%;object-fit:cover}
+.pay-close{
+  position:absolute;
+  top:12px;right:12px;
+  height:36px;width:36px;
+  border-radius:50%;
+  border:0;
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+
+.pay-avatar-wrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:-1px;
+  padding-left:16px;
+  position:relative;
+  z-index:10;
+}
+.pay-avatar{
+  width:64px;
+  height:64px;
+  border-radius:14px;
+  overflow:hidden;
+  border:2px solid rgba(0,0,0,.12);
+  background:#fff;
+}
+.pay-avatar img{width:100%;height:100%;object-fit:cover}
+.pay-id{margin-top:10px}
+.pay-name{font-weight:800;font-size:1.05rem;margin-bottom:-12px}
+.pay-handle{color:var(--text-dim);margin-top:6px;font-size:.94rem}
+
+.pay-body{
+  padding:16px 18px 20px;
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  margin-top:-25px;
+}
+
+.benefits{margin:6px 0 12px;padding-left:18px}
+.benefits li{margin:8px 0;display:flex;gap:10px;align-items:center}
+.check{
+  display:inline-grid;
+  place-items:center;
+  width:26px;height:26px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--brand),var(--brand-2));
+  color:#121212;
+  font-weight:800;
+  flex:0 0 auto;
+}
+.sep{height:1px;background:rgba(255,255,255,.06);margin:12px 0;border:0}
+
+.pix-block{
+  background:#0f1011;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:12px;
+  color:#dfe3e7;
+}
+#qrPlaceholder{opacity:.9;text-align:center;margin-top:10px}
+#pixImg{display:block;margin:12px auto 0;max-width:260px;border-radius:12px}
+
+.btn-generate{
+  display:inline-block;
+  width:100%;
+  height:48px;
+  border-radius:12px;
+  border:0;
+  background:linear-gradient(90deg,var(--brand),var(--brand-2));
+  color:#121212;
+  font-weight:800;
+  cursor:pointer;
+  margin-top:12px;
+  text-align:center;
+  line-height:48px;
+}
+#pixKey{
+  width:100%;
+  height:44px;
+  border-radius:10px;
+  background:#247,250,252;
+  border:1px solid rgb(230, 233, 237);
+  color:rgb(51, 51, 51);
+  padding:8px 12px;
+  font-size:.95rem;
+  margin-top:10px;
+  display:block;
+}
+.btn-copy{
+  display:inline-block;
+  margin-top:8px;
+  width:100%;
+  height:44px;
+  border-radius:10px;
+  border:0;
+  background:linear-gradient(90deg,var(--brand),var(--brand-2));
+  color:#121212;
+  font-weight:700;
+  cursor:pointer;
+  line-height:44px;
+  text-align:center;
+}
+
+/* =========================
+   ORDERBUMP (CAROUSEL)
+========================= */
+.ob-carousel{display:flex;align-items:center;gap:10px;position:relative;margin:12px 0 20px}
+.ob-nav{min-width:36px;height:36px;border-radius:10px;border:0;background:linear-gradient(180deg,#ff8a3d,#ff6f2a);color:#fff;font-weight:800;cursor:pointer;display:grid;place-items:center}
+.ob-window{flex:1;overflow:hidden}
+.ob-inner{display:flex;gap:12px;transition:transform .28s ease}
+.ob-card{
+  min-width:100%;
+  max-width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:12px;
+  border:1px dashed rgba(255,138,61,0.12);
+  background:linear-gradient(180deg,#0f1011,#0b0b0c);
+}
+.ob-img{width:76px;height:76px;border-radius:8px;object-fit:cover;flex:0 0 auto;border:1px solid rgba(255,255,255,.04)}
+.ob-info{flex:1;min-width:0}
+.ob-title2{font-weight:800;color:#ffd89c;font-size:.95rem}
+.ob-desc2{color:#cfcfcf;font-size:.82rem;margin-top:4px}
+/* ==================================================
+   DESCONTO AUTOMÁTICO — badge + preço riscado
+================================================== */
+
+/* bloco preço: empilha preço riscado acima do preço atual */
+.price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0px;
+  min-width: 0;
+}
+
+/* preço riscado (preço cheio original) */
+.price-old {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(0,0,0,0.45);
+  text-decoration: line-through;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+/* ── Card de oferta em destaque ── */
+.offer-card {
+  background: #f8f2ea;
+  border-radius: 20px;
+  padding: 18px 18px 22px;
+  margin: 0 0 18px;
+}
+.offer-card-head {
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-weight: 600;
+  font-size: 15px;
+  color: #1c1c28;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.offer-timer {
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: 13px;
+  color: #5b6b9c;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.offer-msg-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 26px;
+}
+.offer-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #eee;
+}
+.offer-msg {
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-weight: 400;
+  font-size: 14px;
+  color: #1c1c28;
+  line-height: 1.45;
+}
+.offer-cta-wrap { position: relative; }
+.offer-save-badge {
+  position: absolute;
+  top: -12px; left: 14px;
+  background: #e4f9e9;
+  color: #18a34a;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  z-index: 2;
+  white-space: nowrap;
+}
+.offer-cta {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 17px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Poppins", system-ui, sans-serif;
+  color: #1c1c28;
+  text-align: center;
+  background: linear-gradient(90deg, #f6842c, #f7b48f);
+  cursor: pointer;
+}
+.offer-old-price {
+  text-align: right;
+  font-size: 12px;
+  color: #5b6b9c;
+  margin-top: 8px;
+  padding-right: 4px;
+}
+.offer-old-price .strike { text-decoration: line-through; color: #8892b0; }
+
+/* texto de desconto (ex: (5% off)) estilo referência do usuário */
+.discount-badge {
+  display: inline;
+  background: none;
+  color: inherit;
+  opacity: 0.85;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+  border-radius: 0;
+  margin-left: 6px;
+  border: none;
+  white-space: nowrap;
+}
+
+/* ajuste no .left para alinhar texto + badge */
+.sub-btn .left {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+
+.ob-old{font-size:.78rem;color:#9b9b9b;text-decoration:line-through}
+.ob-new{font-weight:900;color:#36d399;font-size:1rem}
+.ob-action{flex:0 0 120px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.ob-action input{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:0;z-index:2}
+.ob-action-btn{display:inline-block;padding:10px 10px;border-radius:8px;background:linear-gradient(180deg,#ff8a3d,#ff6f2a);color:#fff;font-weight:800;text-align:center;line-height:1}
+.ob-action input:checked + .ob-action-btn{background:linear-gradient(180deg,#36d399,#2fb07d);color:#082018}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width:480px){
+  body{padding:0;background:#f9f6f2}
+  .wrap{padding:0 16px}
+
+  .profile-card{margin-top:12px;border-radius:20px}
+  .cover{border-top-left-radius:18px;border-top-right-radius:18px}
+
+  /* ajustes pequenos */
+  :root{
+    --avatar-size:74px;
+    --avatar-top:-52px;
+  }
+}
+
+@media (max-width:460px){
+  .ob-action{flex:0 0 100px}
+  .ob-img{width:64px;height:64px}
+}
+
+/* orderbump mobile (layout coluna) */
+@media (max-width:480px){
+  .ob-card{
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .ob-info{width:100%}
+  .ob-title2{font-size:1.05rem;line-height:1.2}
+  .ob-desc2{font-size:.9rem;line-height:1.35}
+  .ob-action{width:100%;justify-content:center;margin-top:10px}
+  .ob-action-btn{width:100%;text-align:center;padding:12px 0}
+}
+
+@media (max-width:420px){
+  body{padding:12px}
+  .pay-card{left:50%;top:4%;transform:translateX(-50%);width:96vw;max-height:92vh}
+  .pay-header{height:140px}
+  .avatar{left:12px}
+  .pay-avatar{width:68px;height:68px}
+}
+/* ==================================================
+   PATCH FINAL CORRIGIDO — SEM COMER BLOCO
+   (medidas exatas, layout real, animation-safe)
+================================================== */
+
+/* ---------- FONTE ---------- */
+.plans-title,
+.promos-head h3,
+.sub-btn,
+.sub-btn .left,
+.sub-btn .price,
+.sub-note{
+  font-family:"Poppins", system-ui, sans-serif !important;
+  font-weight:500 !important;
+}
+
+/* ==================================================
+   TÍTULO: ASSINATURAS
+================================================== */
+/* card-body padding = 18px */
+.plans-title{
+  margin-left:-1px;      /* 18 + 1 = 19px esquerda */
+  margin-right:-3px;    /* ajuste visual p/ 21px direita */
+  margin-bottom:1px;    /* distância do botão 1 mês */
+  font-size:16px;
+}
+
+/* ==================================================
+   BOTÃO BASE (PRIVACY)
+================================================== */
+/* ==================================================
+   BOTÃO BASE PRIVACY ORIGINAL (RESTORE)
+================================================== */
+.sub-btn{
+  min-height:56px;
+  height:auto;
+  padding:10px 22px;
+
+  background-image:linear-gradient(
+    45deg,
+    rgb(246,141,61) 0%,
+    rgb(246,147,71) 3%,
+    rgb(247,169,108) 17%,
+    rgb(249,184,135) 30%,
+    rgb(249,194,152) 41%,
+    rgb(250,198,158) 50%,
+    rgb(249,192,157) 67%,
+    rgb(248,175,154) 88%,
+    rgb(247,164,153) 100%
+  );
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  cursor:pointer;
+  user-select:none;
+  transition:all .25s ease;
+
+  font-family:"Poppins", system-ui;
+  font-size:16px;
+  color:#000;
+}
+
+/* texto esquerdo */
+.sub-btn .left{
+  font-weight:600;
+}
+
+/* preço direita */
+.sub-btn .price{
+  font-weight:600;
+}
+
+/* desconto */
+.sub-note{
+  font-weight:500;
+  opacity:.75;
+  margin-left:4px;
+}
+
+/* texto interno */
+.sub-btn .left,
+.sub-btn .price{
+  font-size:16px;
+  line-height:21px;
+}
+.sub-btn .price{ font-weight:500; }
+.sub-note{ font-size:16px; opacity:.85; margin-left:0px; }
+
+/* ==================================================
+   PROMOÇÕES — TÍTULO
+================================================== */
+.promos-head h3{
+  font-size:16px;
+  margin:0;               /* zera qualquer herança */
+  padding-top:19px;        /* ✅ SOBE visualmente */
+  padding-bottom:5px;     /* ✅ distância real até o botão 3M */
+  line-height:1;
+}
+
+/* ==================================================
+   DISTÂNCIA ENTRE 3M → 12M
+================================================== */
+.sub-btn[data-plan-code="PLAN_12M"]{
+  margin-top:9px;
+}
+
+/* ==================================================
+   SAFETY — NÃO TOCAR NA ANIMAÇÃO
+================================================== */
+#promosBody{
+  transform:none !important;
+}
+/* ==================================================
+   PROMOÇÕES — FIX REAL: 12px (esq) e 19px (dir)
+   SEM mexer nos botões com negativo
+================================================== */
+
+/* 1) a área das promoções vira "full width" do card,
+      ignorando o padding do card-body (18px) */
+.promos-body{
+  /* neutraliza o padding do .card-body (18px) */
+  margin-left:-18px;
+  margin-right:-18px;
+
+  /* agora sim: distância REAL da borda do card */
+  padding-left:11px;   /* ✅ 12px da borda esquerda do card */
+  padding-right:19px;  /* ✅ 19px da borda direita do card */
+  box-sizing:border-box;
+}
+
+/* 2) botões ocupam 100% desse espaço sem invadir nada */
+.promos-body .sub-btn{
+  width:100%;
+  margin-left:0;
+  margin-right:0;
+}
+
+/* 3) distância entre 3M e 12M = 9px */
+.promos-body .sub-btn[data-plan-code="PLAN_12M"]{
+  margin-top:8px;
+}
+
+/* 4) distância do título "Promoções" até o bloco 3M = 6px */
+.promos-head{
+  margin-bottom:1px;
+}
+/* PROMOÇÕES — empurrar o título pra direita */
+#promosHead h3{
+  padding-left: 3px;  /* aumenta/diminui aqui */
+}
+/* ==================================================
+   AJUSTES FINOS — ASSINATURAS & BOTÕES
+   (somente texto/título/números e espaçamentos)
+================================================== */
+
+/* ===============================
+   TÍTULO "ASSINATURAS"
+   - subir/descer apenas verticalmente
+=============================== */
+.plans-title{
+  margin-top: -1px;     /* sobe o título (ajuste fino) */
+  margin-bottom: 6px;   /* distância até o botão 1 mês */
+}
+
+/* ===============================
+   BOTÃO 1 MÊS — DISTÂNCIA DO CARD
+   - 15px esquerda
+   - 21px direita
+=============================== */
+.plan-grid .sub-btn{
+  margin-left: -3px;    /* 18px (card-body) → 15px real */
+  margin-right: 3px;    /* 18px → 21px real */
+}
+
+/* ===============================
+   TEXTO / TÍTULO / NÚMEROS
+   DENTRO DE TODOS OS BOTÕES
+   (1M, 3M, 12M)
+   - 35px da "parede" esquerda
+   - 21px da "parede" direita
+=============================== */
+.sub-btn{
+  padding-left: 30px !important;
+  padding-right: 31px !important;
+}
+
+/* garante que textos respeitem o padding */
+.sub-btn .left,
+.sub-btn .price,
+.sub-btn .sub-note{
+  margin: 0;
+}
+/* Valor (lado direito) 2px pra esquerda */
+.sub-btn .price{
+  position: relative;
+  left: -2px;
+}
+.plans-title{
+  margin-bottom: 4px; /* aproxima do botão */
+}
+/* =========================
+   DISTÂNCIA HEADER -> CARD (igual Privacy)
+========================= */
+
+/* body sem padding (não empurra layout) */
+body{ padding:0 !important; }
+
+/* espaço real abaixo do header */
+main.wrap{ padding-top:7px !important; }
+
+/* card não controla espaço do topo */
+.profile-card{ margin-top:0 !important; }
+/* COR DO GLOBO */
+.select-wrapper-img{
+  opacity:.9;
+  filter: brightness(0) saturate(100%);
+  pointer-events:none; /* 🔥 */
+}
+
+/* SELECT COM FONTE CERTA */
+#cultureSelectHeader{
+  font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size:16px;
+  font-weight:400;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+  cursor:pointer;
+  z-index:2; /* 🔥 */
+}
+/* Texto do dropdown igual Privacy */
+#cultureSelectHeader{
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial !important;
+  font-size: 14px;
+  color: rgb(102,102,102);
+}
+.lang-dropdown{
+  position:relative;
+}
+.lang-menu button:hover{
+  background:#f5f5f5;
+}
+
+.lang-menu button:hover{
+  background:rgb(245,245,245);
+}
+/* =========================
+   DROPDOWN IDIOMAS — FINAL (SAFE)
+   isolado, sem impacto em outros botões
+========================= */
+:root{
+  --lang-top: 36px;
+  --lang-right: -6px;
+  --lang-w: 132px;
+
+  --lang-pad-y: 6px;
+  --lang-item-py: 6px;
+  --lang-item-pl: 14px;   /* distância do texto da borda esquerda */
+  --lang-item-pr: 14px;
+  --lang-line: 24px;
+}
+
+/* container relativo (âncora) */
+.lang-dropdown{
+  position:relative;
+}
+
+/* botão do globo (hitbox correta) */
+.lang-trigger{
+  width:34px;
+  height:34px;
+  background:transparent;
+  border:0;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+
+/* ícone */
+.lang-trigger img{
+  width:22px;
+  height:23px;
+  display:block;
+  object-fit:contain;
+  color:rgb(153,153,153);
+  transform:translateY(-0.5px);
+}
+
+/* caixinha */
+.lang-menu{
+  position:absolute;
+  top:var(--lang-top);
+  right:var(--lang-right);
+  width:var(--lang-w);
+
+  background:#fff;
+  border:1px solid rgba(0,0,0,.22);
+  border-radius:10px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+  padding:var(--lang-pad-y) 0;
+  display:none;
+  z-index:99999;
+  overflow:hidden;
+}
+
+/* itens */
+.lang-menu button{
+  width:100%;
+  padding:
+    var(--lang-item-py)
+    var(--lang-item-pr)
+    var(--lang-item-py)
+    var(--lang-item-pl);
+
+  background:transparent;
+  border:0;
+  text-align:left;
+
+  font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size:14px;
+  font-weight:400;
+  line-height:var(--lang-line);
+  color:rgb(102,102,102);
+
+  cursor:pointer;
+}
+
+/* hover */
+.lang-menu button:hover{
+  background:rgb(245,245,245);
+}
+/* ==================================================
+   PATCH — BANNER ARREDONDADO (PRIVACY-LIKE) [SAFE v2]
+   - topo arredondado + curva sutil embaixo do banner
+   - NÃO mexe em altura do banner nem em botões
+================================================== */
+
+:root{
+  --card-radius: 26px;
+  --banner-curve-h: 0px;  /* ✅ antes 30px (era o “bug”) */
+  --banner-curve-r: 20px;  /* ✅ curva mais natural */
+  --card-line: rgba(0,0,0,.08);
+  --card-bg: #fff;
+}
+
+/* card (garante recorte perfeito) */
+.profile-card{
+  border-radius: var(--card-radius) !important;
+  overflow: hidden !important;
+  border: 1px solid var(--card-line) !important;
+  background: var(--card-bg) !important;
+}
+
+/* banner (só topo arredondado) */
+.cover{
+  position: relative !important;
+  overflow: hidden !important;
+
+  border-top-left-radius: var(--card-radius) !important;
+  border-top-right-radius: var(--card-radius) !important;
+
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* imagem respeitando o recorte */
+.cover img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* garante que a imagem fique abaixo da curva */
+.cover img{ position: relative; z-index: 1; }
+
+/* espaçamento real entre o card branco e o bloco Postagens|Mídias */
+#cardPerfil{
+  margin-bottom: 18px !important; /* ajuste fino: 16–20 */
+}
+
+/* ===============================
+   MEDIA GRID — IGUAL PRIVACY
+================================ */
+
+.media-menu{
+  display:flex;
+  gap:18px;
+  padding:14px 6px 10px 6px;
+  font-size:14px;
+}
+
+.media-pill{
+  color:#555;
+  cursor:pointer;
+  font-weight:500;
+}
+
+.media-pill.active{
+  color:var(--accent);
+}
+
+/* GRID 3 COLUNAS */
+.media-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:4px;
+}
+
+/* CARD */
+.media-item{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  background:#efeae4;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* WATERMARK GRANDE (FUNDO) */
+.media-item::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("images/privacy-logo-media-watermark.svg") center center no-repeat;
+  background-size:70%;
+  opacity:.06;
+}
+
+/* CADEADO CENTRAL */
+.media-item img{
+  width:24px;
+  height:26px;
+  object-fit:contain;
+  position:relative;
+  z-index:2;
+  opacity:.75;
+}
+/* ===============================
+   FUNDO DO BLOCO POSTAGENS/MÍDIAS
+   (o que você marcou em verde)
+================================ */
+.tabs-privacy{
+  background:rgb(255,255,255) !important;
+  border:1px solid rgba(0,0,0,.08) !important;
+}
+/* =========================================================
+   MEDIA GRID — PRIVACY LIKE (watermark + lock central)
+========================================================= */
+
+/* menu horizontal igual Privacy */
+#sectionMedia .media-menu{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 0 12px;
+  margin: 0;
+  background: transparent;
+}
+
+/* cada item do menu */
+#sectionMedia .media-pill{
+  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size:14px;
+  font-weight:500;
+  line-height:18px;
+  color:#111;
+  padding: 8px 10px;
+  border-radius: 999px;
+  cursor:pointer;
+  user-select:none;
+}
+
+/* ativo (igual Privacy: fundo leve + texto laranja) */
+#sectionMedia .media-pill.active{
+  color: var(--accent);
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.10);
+}
+
+/* grid 3 colunas como no Privacy */
+#sectionMedia .media-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 0 10px 14px;  /* respiro */
+}
+
+/* cada quadrado */
+#sectionMedia .media-item{
+  position:relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow:hidden;
+  background: #efe7de; /* tom semelhante ao Privacy no locked */
+}
+
+/* some com o <img> que você colocou dentro (não precisamos dele) */
+#sectionMedia .media-item > img{
+  display:none !important;
+}
+
+/* watermark grande no fundo */
+#sectionMedia .media-item::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image: url("images/privacy-logo-media-watermark.svg");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: 86%;
+  opacity: .28;
+  pointer-events:none;
+}
+
+/* cadeado central por cima */
+#sectionMedia .media-item::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:26px;
+  height:30px;
+  transform:translate(-50%, -50%);
+
+  background: rgb(103,116,142); /* 🔥 COR AQUI */
+
+  -webkit-mask: url("images/lock-keyhole.svg") center/contain no-repeat;
+  mask: url("images/lock-keyhole.svg") center/contain no-repeat;
+
+  opacity:1;
+}
+.content-card{
+  background:#fff;
+  border-radius:26px;
+  border:1px solid rgba(0,0,0,.08);
+  margin-top:18px;
+  overflow:hidden;
+}
+/* BLOCO 2 (card de Postagens/Mídias) */
+#bloco2{
+  padding: 14px 14px 16px;
+}
+
+.tabs-privacy{
+  width:100%;
+  height:57px;
+  background:#fff;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  margin:0;
+}
+
+/* post dentro do bloco 2 */
+#bloco2 .post{
+  margin-top: 14px;
+}
+#bloco2-body{
+  padding: 12px;
+}
+/* ===== BLOCO 2 dividido (igual Privacy) ===== */
+
+/* Card A: só tabs */
+.tabs-card,
+.post-card{
+  width:100%;
+  max-width:397px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* header do post */
+.p-head{
+  position:relative;
+  height:94px;               /* dá espaço pro avatar + textos */
+}
+
+.p-avatar{
+  position:absolute;
+  left:19px;                 /* ✅ */
+  top:25px;                  /* ✅ */
+  width:62px;                /* ✅ */
+  height:62px;               /* ✅ */
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.p-meta{
+  position:absolute;
+  left: calc(19px + 62px + 7px);   /* ✅ 7px do avatar */
+  top:34px;
+}
+
+.p-name{
+  font-size:14px;
+  font-weight:700;
+  line-height:18px;
+  display:flex;
+  align-items:center;
+  gap:0px;
+}
+
+.p-verified{
+  width:16px;
+  height:16px;
+}
+
+.p-handle{
+  margin-top:4px;           /* ✅ distância nome -> @ */
+  font-size:13px;
+  color:#666;
+  line-height:16px;
+}
+
+.p-more{
+  position:absolute;
+  top:33px;
+  right:16px;
+  background:transparent;
+  border:0;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  color:#111;
+}
+
+/* preview (watermark + lock + mini stats) */
+.p-preview{
+  position:relative;
+  height:237px;              /* ✅ */
+  margin-top:8px;            /* ✅ avatar -> preview */
+  background:#efe7de;
+  overflow:hidden;
+}
+
+/* watermark grande */
+.p-watermark{
+  position:absolute;
+  inset:0;
+  background:url("images/privacy-logo-media-watermark.svg") center no-repeat;
+  background-size: 396px 252.8px;  /* ✅ */
+  opacity:.28;
+}
+
+/* lock central (tamanho do svg) */
+.p-lock{
+  position:absolute;
+  width:43.75px;
+  height:50px;
+  left:50%;
+  top:92px;
+  transform:translateX(-50%);
+
+  background:rgb(103,116,142); /* 🔥 COR AQUI */
+
+  -webkit-mask:url("images/lock-keyhole.svg") center/contain no-repeat;
+  mask:url("images/lock-keyhole.svg") center/contain no-repeat;
+
+  opacity:.85;
+}
+
+/* mini stats (ícones abaixo do lock) */
+.p-mini{
+  position:absolute;
+  left:50%;
+  top: calc(92px + 50px + 25px);   /* ✅ lock -> mini = 25px */
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  gap:14px;                  /* ✅ número -> próximo ícone */
+  font-size:14px;
+  color:rgb(103,116,142);  /* 🔥 TROCA AQUI */
+}
+
+.p-mini .mini{
+  display:flex;
+  align-items:center;
+  gap:8px;                   /* ✅ ícone -> número */
+}
+
+.p-mini img{
+  display:block;
+}
+/* cor dos icones stats do post */
+.p-mini img{
+  filter: brightness(0) saturate(100%)
+          invert(48%) sepia(10%) saturate(720%)
+          hue-rotate(182deg) brightness(90%) contrast(90%);
+}
+/* tamanhos dos 3 mini-ícones */
+.p-mini .mini:nth-child(1) img{ width:17px; height:14.88px; }
+.p-mini .mini:nth-child(2) img{ width:15.54px; height:13.6px; }
+.p-mini .mini:nth-child(3) img{ width:17px; height:14.51px; }
+
+.p-mini b{ font-weight:400; }
+
+/* footer icons (abaixo do preview) */
+.p-footer{
+  height: calc(383px - 94px - 8px - 237px); /* completa o card */
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding: 0 16px;
+}
+
+.p-footer img:nth-child(1){ width:22px; height:18.78px; }
+.p-footer img:nth-child(2){ width:19.91px; height:19.91px; }
+.p-footer img:nth-child(3){ width:22px; height:22px; }
+.p-footer img:nth-child(4){ width:16.26px; height:22px; margin-left:auto; }
+
+html,body{
+  overflow-x:hidden;
+  max-width:100%;
+}
+
+main.wrap{
+  max-width:100%;
+  overflow-x:hidden;
+}
+/* ===== FIX MOBILE PRIVACY REAL ===== */
+@media (max-width:420px){
+
+  .wrap{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .profile-card,
+  .tabs-card,
+  .post-card{
+    width:100%;
+    max-width:100%;
+  }
+
+  .sub-btn{
+    width:100%;
+    max-width:100%;
+  }
+
+}
+/* ===== RESTORE: medidas originais do botão ===== */
+.plan-grid .sub-btn,
+.promos-body .sub-btn{
+  width:100%;
+  max-width:none;          /* não trava 361 */
+  margin-left:0;
+  margin-right:0;
+}
+
+/* botão: altura + padding + raio (igual antes) */
+.sub-btn{
+  height:47px;             /* se antes era 54, troque aqui */
+  padding:0 18px;          /* volta o padding original */
+  border-radius:999px;
+  box-sizing:border-box;
+}
+
+/* alinhamento do texto */
+.sub-btn .left,
+.sub-btn .price{
+  font-size:16px;
+  line-height:21px;
+  font-weight:600;
+}
+
+/* desconto */
+.sub-btn .sub-note{
+  font-size:16px;
+  font-weight:500;
+  opacity:.75;
+  margin-left:4px;
+}
+/* ==================================================
+   BLOCO 2 — RESTORE CARD PRIVACY REAL
+================================================== */
+
+/* Card do post */
+.post-card{
+  background:#fff;
+  border-radius:26px;
+  border:1px solid rgba(0,0,0,.08);
+  margin:18px auto 0;
+  overflow:hidden;
+  max-width:397px;
+}
+
+/* Header do post (avatar + nome) */
+.p-head{
+  background:#fff;
+  border-bottom:0 !important;
+}
+
+/* Preview (área bege) */
+.p-preview{
+  background:#efe7de;
+}
+
+/* Footer ícones */
+.p-footer{
+  background:#fff;
+}
+#sectionMedia{
+  background:#fff;
+  border-radius:26px;
+  padding-bottom:14px;
+}
+/* ===========================
+   PRIVACY MODAL (PIX) — FINAL
+   =========================== */
+
+/* overlay como privacy */
+.pay-backdrop{ background: rgba(0,0,0,.55) !important; backdrop-filter: blur(2px); }
+
+.pay-card.privacy-modal{
+  width: min(387px, calc(100vw - 32px)) !important;
+  max-height: 88vh !important;
+  background: rgb(250, 247, 242) !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  display:flex !important;
+  flex-direction:column !important;
+  box-shadow:none !important;
+}
+
+#authGateStep input:focus {
+  border-color: var(--accent,#e91e8c) !important;
+  outline: none !important;
+}
+
+/* header/band */
+.pm-header{
+  position: relative;
+  height: 80px;          /* banner 387x80 */
+  overflow: visible;     /* ✅ deixa o avatar “vazar” pra baixo sem cortar */
+}
+
+/* garante que o banner fique certinho atrás */
+.pm-banner{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* avatar sempre por cima do banner */
+.pm-avatar{
+  z-index: 3;
+}
+
+/* nome/handle por cima também */
+.pm-id{
+  z-index: 3;
+}
+
+/* botão fechar por cima de tudo */
+.pm-close{
+  z-index: 4;
+}
+
+.pm-banner{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* close */
+.pm-close{
+  position:absolute;
+  right:12px;
+  top:12px;
+  width:36px;
+  height:36px;
+  border-radius:0;
+  border:0;
+  background:transparent !important;
+  color:#fff;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+
+/* avatar (96x96), top 46px, left 9px */
+.pm-avatar{
+  position:absolute;
+  width:96px;
+  height:96px;
+  left:9px;
+  top:46px;
+  border-radius:50%;
+  object-fit:cover;
+  border: 0px solid #fff;
+  background:#fff;
+}
+
+/* nome + @ ao lado do avatar */
+.pm-id{
+  position: absolute;
+  left: calc(9px + 96px + 10px); /* avatar left + largura + gap */
+  right: 44px;                   /* respeita o botão fechar */
+  bottom: -38px;                 /* desce junto com avatar que vaza */
+  z-index: 3;
+  overflow: hidden;
+}
+
+.pm-name{
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:14px;
+  line-height:18px;
+  font-weight:600;
+  color: rgb(30,41,59);
+  margin:0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pm-handle{
+  margin-top:2px;
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:13px;
+  line-height:16px;
+  font-weight:400;
+  color: rgb(108,117,125);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* body com padding pra “descer” depois do avatar sobreposto */
+.pm-body{
+  padding: 92px 16px 18px; /* ou 76px 16px 18px (se quiser 14px certinho) */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* benefícios */
+.pm-h3{
+  margin: 8px 0 8px;
+  padding-left: 15px;            /* pra bater ~31px total (16 + 15) */
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:16px;
+  line-height:21.6px;
+  font-weight:600;               /* SemiBold */
+  color:#000;
+}
+
+.pm-benefits{
+  list-style:none;
+  padding:0;
+  margin: 0;
+}
+
+.pm-benefits li{
+  display:flex;
+  align-items:center;
+  gap:9px;                       /* seu 9px ícone -> texto */
+  padding-left: 15px;            /* pra bater ~31px total */
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:16px;
+  line-height:24px;
+  font-weight:400;
+  color: rgb(51,51,51);
+}
+
+.pm-benefits li + li{ margin-top:12px; }
+
+/* check laranja */
+.pm-check{
+  width:18px;
+  height:18px;
+  display:inline-grid;
+  place-items:center;
+  color: rgb(246,132,44);
+  font-weight:900;
+  flex:0 0 auto;
+}
+
+/* linha full width (a que vai até a borda do modal) */
+.pm-divider-full{
+  height:1px;
+  background: rgba(0,0,0,.10);
+  margin-top:26px;               /* seu “26px abaixo do Cancele…” */
+  margin-left:-16px;
+  margin-right:-16px;            /* estoura até borda */
+}
+
+/* seção pagamentos */
+.pm-title{
+  margin: 22px 0 8px;            /* seu “22px após a linha” */
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:20px;
+  line-height:22px;
+  font-weight:700;               /* Bold */
+  color: rgb(48,49,51);
+}
+
+.pm-label{
+  margin-top:15px;               /* Formas pagamento -> Valor (15px) */
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:14px;
+  line-height:18.9px;
+  font-weight:400;
+  color: rgb(168,171,178);
+}
+
+.pm-amount{
+  margin-top:15px;               /* Valor -> R$ (15px) */
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:20px;
+  line-height:22px;
+  font-weight:700;
+  color: rgb(48,49,51);
+}
+
+/* input pix (caixinha) */
+.pm-pix{
+  margin-top:17px;               /* R$ -> input (17px) */
+  width:100%;
+  height:38px;
+  border:0;
+  outline:0;
+  border-radius:10px;
+  background: rgb(248,250,252);
+  padding: 0 12px;
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:14px;
+  line-height:38px;
+  color: rgb(247,250,252);
+}
+
+/* botão copiar (mesma vibe do privacy) */
+.pm-copy{
+  margin-top:17px;               /* input -> botão (17px) */
+  width:100%;
+  height:46px;
+  border:0;
+  border-radius:30px;
+  background-image: linear-gradient(
+    45deg,
+    rgb(246,141,61) 0%,
+    rgb(246,147,71) 3%,
+    rgb(247,169,108) 17%,
+    rgb(249,184,135) 30%,
+    rgb(249,194,152) 41%,
+    rgb(250,198,158) 50%,
+    rgb(249,192,157) 67%,
+    rgb(248,175,154) 88%,
+    rgb(247,164,153) 100%
+  );
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:16px;
+  line-height:24px;
+  font-weight:500;
+  letter-spacing: 1px;
+  color: rgb(51,51,51);
+  opacity:.9;
+  cursor:pointer;
+}
+
+/* linha abaixo do botão (com 16px de respiro lateral) */
+.pm-divider{
+  height:1px;
+  background: rgba(0,0,0,.10);
+  margin-top:17px;               /* botão -> linha (23px) */
+}
+
+/* opcional: estilo do “Gerar Pix” no mesmo padrão */
+.pm-generate{
+  margin-top:14px;
+  width:100%;
+  height:46px;
+  border:0;
+  border-radius:30px;
+  background:#111;
+  color:#fff;
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* opcional: status */
+.pm-status{
+  margin-top:14px;
+  font-family:"Poppins", system-ui, sans-serif;
+  font-size:14px;
+  color: rgb(108,117,125);
+}
+/* ===========================
+   MODAL PRIVACY — COMPACT FIT
+   Tudo visível sem scroll
+=========================== */
+
+/* ── HEADER: banner + faixa de perfil ── */
+.pm-header{
+  position: relative !important;
+  height: 116px !important;
+  overflow: hidden !important;
+  background: #ede8e3 !important;
+  flex-shrink: 0 !important;
+}
+
+.pm-banner{
+  position: absolute !important;
+  top:0 !important; left:0 !important; right:0 !important;
+  height: 70px !important;
+  width: 100% !important;
+  object-fit: cover !important;
+  z-index: 1 !important;
+  display: block !important;
+}
+
+.pm-close{
+  position: absolute !important;
+  top: 8px !important; right: 8px !important;
+  z-index: 5 !important;
+  width: 30px !important; height: 30px !important;
+}
+
+/* Avatar: cruza a linha banner/faixa */
+.pm-avatar{
+  position: absolute !important;
+  width: 62px !important;
+  height: 62px !important;
+  left: 12px !important;
+  top: 39px !important;
+  border-radius: 14px !important;
+  border: 2px solid #fff !important;
+  object-fit: cover !important;
+  z-index: 3 !important;
+  background: #ccc !important;
+}
+
+/* Nome + handle na faixa bege ao lado do avatar */
+.pm-id{
+  position: absolute !important;
+  left: calc(12px + 62px + 10px) !important;
+  right: 12px !important;
+  top: 74px !important;
+  bottom: 4px !important;
+  z-index: 3 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.pm-name{
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 17px !important;
+  color: rgb(30,41,59) !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.pm-handle{
+  font-size: 11px !important;
+  line-height: 15px !important;
+  font-weight: 400 !important;
+  color: rgb(108,117,125) !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ── BODY compacto ── */
+.pm-body{
+  padding: 12px 14px 12px !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Benefícios exclusivos */
+.pm-h3{
+  margin: 0 0 6px !important;
+  padding-left: 0 !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+  font-weight: 600 !important;
+  color: #000 !important;
+}
+
+.pm-benefits{
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.pm-benefits li{
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding-left: 0 !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  color: rgb(51,51,51) !important;
+}
+
+.pm-benefits li + li{ margin-top: 0px !important; }
+
+.pm-check{
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  background: var(--accent) !important;
+  -webkit-mask: url("images/icon-check.svg") center/contain no-repeat !important;
+  mask: url("images/icon-check.svg") center/contain no-repeat !important;
+}
+
+/* Divisor */
+.pm-divider-full{
+  margin-top: 10px !important;
+  height: 1px !important;
+  background: rgba(0,0,0,.10) !important;
+  margin-left: -14px !important;
+  margin-right: -14px !important;
+}
+
+/* Formas de pagamento */
+.pm-title{
+  margin: 10px 0 0 !important;
+  font-size: 15px !important;
+  line-height: 20px !important;
+  font-weight: 700 !important;
+  color: rgb(48,49,51) !important;
+}
+
+.pm-label{
+  margin-top: 4px !important;
+  font-size: 12px !important;
+  line-height: 16px !important;
+  font-weight: 400 !important;
+  color: rgb(168,171,178) !important;
+}
+
+.pm-amount{
+  margin-top: 2px !important;
+  font-size: 17px !important;
+  line-height: 22px !important;
+  font-weight: 700 !important;
+  color: rgb(48,49,51) !important;
+}
+
+/* QR code menor */
+#pixQrImg{
+  width: 190px !important;
+  height: 190px !important;
+  margin: 0 auto !important;
+}
+#qrcode{
+  width: fit-content !important;
+  margin: 14px auto !important;
+  padding: 12px !important;
+  border: 2px solid #2a3562 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+
+/* Textarea pix copia e cola */
+#pixCodigo{
+  min-height: 44px !important;
+  font-size: 10px !important;
+  padding: 8px !important;
+  line-height: 1.4 !important;
+}
+
+/* Botão copiar */
+.pm-body button[onclick="pixCopiar()"]{
+  padding: 11px !important;
+  font-size: 14px !important;
+  margin-top: 8px !important;
+}
+
+/* Timer */
+#pixTimer{
+  margin-top: 8px !important;
+  font-size: 11px !important;
+}
+
+/* Status / loading */
+#pixStatus{
+  margin: 8px 0 2px !important;
+  font-size: 12px !important;
+}
+
+.pm-divider{ margin-top: 10px !important; }
+.pm-pix{ margin-top: 10px !important; }
+.pm-copy{ margin-top: 10px !important; height: 42px !important; font-size: 14px !important; }
+.pm-generate{ margin-top: 8px !important; height: 42px !important; font-size: 14px !important; }
+.pm-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+
+  width:20px;
+  height:20px;
+
+  background-color: rgb(144,147,153) !important; /* cor do X */
+
+  -webkit-mask: url("images/closex.svg") center/contain no-repeat !important;
+  mask: url("images/closex.svg") center/contain no-repeat !important;
+
+  border:0 !important;
+  padding:0 !important;
+  outline:none !important;
+  cursor:pointer;
+}
+
+/* ======================================================
+   BLOCO 2 (TABS) — ÚNICO BLOCO FINAL (SEM CONFLITO)
+   - borda esquerda/direita: 29px
+   - gap entre tabs: 68px
+   - icon media: 18.28x16
+====================================================== */
+
+#tabsCard .tabs-privacy{
+  position: relative !important;   /* 🔥 ESSENCIAL */
+  overflow: visible !important;
+
+  height:57px !important;
+  padding:0 29px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  column-gap:68px !important;
+
+  background:#fff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  border-radius:18px !important;
+}
+
+#tabsCard .tab-privacy{
+  flex:0 0 auto !important;
+  height:57px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  padding:0 !important;
+  white-space:nowrap !important;
+
+  font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial !important;
+  font-size:16px !important;
+  font-weight:500 !important;
+  line-height:18px !important;
+  color:rgb(51,51,51) !important;
+
+  position:relative !important;
+}
+
+#tabsCard .tab-icon{ margin-right:9px !important; }
+#tabsCard .tab-number{ margin-right:6px !important; }
+
+/* ícone base */
+#tabsCard .tab-icon{
+  background:rgb(51, 51, 51) !important;
+  -webkit-mask:center/contain no-repeat !important;
+  mask:center/contain no-repeat !important;
+  opacity:.95 !important;
+  flex:0 0 auto !important;
+}
+
+/* Posts */
+#tabsCard .tab-icon-posts{
+  width:10.64px !important;
+  height:20px !important;
+  -webkit-mask-image:url("images/feed-2.svg") !important;
+  mask-image:url("images/feed-2.svg") !important;
+}
+
+/* Media (18.28 x 16) */
+#tabsCard .tab-icon-media{
+  width:18.28px !important;
+  height:16px !important;
+  -webkit-mask-image:url("images/media-play.svg") !important;
+  mask-image:url("images/media-play.svg") !important;
+}
+
+/* ativo */
+#tabsCard .tab-privacy.active{
+  color:rgb(246,141,61) !important;
+}
+#tabsCard .tab-privacy.active .tab-icon{
+  background:rgb(246,141,61) !important;
+}
+
+#tabUnderline{
+  position:absolute;
+  left:0;
+  bottom:-1px;
+
+  height:2px;
+  width:120px;
+
+  background:rgb(246,141,61);
+  border-radius:999px;
+
+  z-index:999;
+  pointer-events:none;
+
+  transform:translate3d(0,0,0);
+  transition:transform .18s ease, width .18s ease;
+
+  /* 🔥 cria “extensão lateral” suave */
+  box-shadow: 
+    6px 0 0 rgb(246,141,61);
+}
+
+/* pontinha arredondada final (efeito privacy real) */
+#tabUnderline::after{
+  content:"";
+  position:absolute;
+  right:-6px;
+  top:0;
+
+  width:6px;
+  height:2px;
+  background:rgb(246,141,61);
+  border-radius:999px;
+}
+#tabsCard .tabs-privacy{
+  overflow: visible !important;
+}
+#tabsCard .tabs-privacy{
+  position:relative;
+}
+/* COR EXATA do verificado */
+:root{
+  --verified: rgb(253, 115, 80);
+}
+
+/* verificado do topo */
+.verified-icon{
+  width:18px;
+  height:18px;
+  display:inline-block;
+  flex:0 0 18px;
+
+  background: var(--verified);
+  -webkit-mask: url("images/badge-check.svg") center/contain no-repeat;
+  mask: url("images/badge-check.svg") center/contain no-repeat;
+}
+
+/* verificado do post */
+.p-verified{
+  width:16px;
+  height:16px;
+  display:inline-block;
+  flex:0 0 16px;
+
+  background: var(--verified);
+  -webkit-mask: url("images/badge-check.svg") center/contain no-repeat;
+  mask: url("images/badge-check.svg") center/contain no-repeat;
+}
+/* container */
+.media-menu{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  padding:12px 0 14px;
+}
+
+/* botão normal */
+.media-pill{
+  font-family:"Poppins",system-ui;
+  font-size:14px;
+  font-weight:500;
+  color:#111;
+
+  padding:8px 14px;
+  border-radius:999px;
+  cursor:pointer;
+
+  transition:.15s;
+}
+
+/* 🔥 ativo igual privacy */
+.media-pill.active{
+  color:rgb(253,115,80);
+  background:rgba(253,115,80,.25);
+}
+/* ===== CONTAINER ===== */
+.media-menu{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  padding:12px 0 14px;
+}
+
+/* ===== TODOS IGUAIS ===== */
+.media-pill{
+  font-family:"Poppins",system-ui;
+  font-size:14px;
+  font-weight:500;
+  color:#111;
+
+  padding:8px 14px;
+  border-radius:999px;
+
+  cursor:pointer;
+  user-select:none;
+
+  /* 🔥 trava tamanho */
+  min-width:64px;
+  text-align:center;
+
+  /* 🔥 evita tremer */
+  border:1px solid transparent;
+  box-sizing:border-box;
+
+  transition:background .15s ease, color .15s ease;
+}
+
+/* ===== ATIVO ===== */
+.media-pill.active{
+  color:rgb(253,115,80);
+  background:rgba(253,115,80,.14);
+
+  /* 🔥 NÃO MUDA TAMANHO */
+  border:1px solid transparent;
+}
+
+/* TITULO Larissa Vitoria dentro do post */
+.p-name{
+  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-weight:500 !important;
+  color:rgb(30,41,59) !important;
+}
+/* USERNAME dentro do post */
+.p-handle{
+  font-family:"Poppins", system-ui, sans-serif !important;
+  font-weight:400 !important; /* Regular */
+  color:rgb(30,41,59) !important;
+}
+/* seta padrão (ABERTO = pra cima) */
+#promosToggle .chev{
+  transition: transform .22s ease;
+  transform: rotate(180deg); /* aberto = seta pra cima */
+  transform-origin: 50% 50%;
+}
+
+/* FECHADO = seta pra baixo */
+#promos.is-collapsed #promosToggle .chev{
+  transform: rotate(0deg);
+}
+/* ===== SETA PROMOÇÕES TAMANHO PRIVACY REAL ===== */
+#promosToggle svg{
+  width:40px !important;
+  height:30px !important;
+  min-width:16px !important;
+  min-height:8px !important;
+  display:block !important;
+}
+
+/* remove tamanho herdado estranho */
+#promosToggle svg path{
+  transform:scale(1) !important;
+}
+/* cor da seta promoções */
+#promosToggle svg{
+  color: rgb(179, 179, 179) !important;
+}
+#promosToggle svg path{
+  fill: rgb(153,153,153) !important;
+}
+/* cadeado do 159 */
+.lock-ico{
+  width:17px !important;
+  height:14px !important;
+}
+/* ===== FIX: edge-stats não ser cortado na borda (mobile) ===== */
+.edge-stats{
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 18px;
+  overflow: visible;
+}
+
+/* garante que cada meta não encolha e nem quebre */
+.edge-stats .meta{
+  flex: 0 0 auto;
+}
+
+/* se a tela for pequena e ainda faltar espaço:
+   deixa rolar pra lateral sem mostrar scrollbar (safe) */
+@media (max-width: 420px){
+  .edge-stats{
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+  .edge-stats::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
+}
+/* icone imagem stats */
+.edge-stats img[src*="image.svg"]{
+  width:17px !important;
+  height:14px !important;
+}
+.edge-stats .ico{
+  width:auto;
+  height:auto;
+}
+/* 🔥 TODOS OS ÍCONES DO TOPO (edge-stats) = 17x14 */
+.edge-stats .ico{
+  width:17px !important;
+  height:14px !important;
+  min-width:17px !important;
+  min-height:14px !important;
+  max-width:17px !important;
+  max-height:14px !important;
+  object-fit:contain !important;
+  flex:0 0 17px !important;
+}
+
+/* (opcional) deixa o SVG/IMG com leve opacidade igual Privacy */
+.edge-stats .ico{ opacity:.85 !important; }
+/* 🔥 FIX: não comer o 383.4K no mobile (iPhone 14/390px) */
+@media (max-width: 430px){
+  :root{
+    --stats-left: 112px;
+    --meta-gap: 10px;
+  }
+
+  .edge-stats{
+    padding-right: 28px !important;
+    overflow: visible !important;
+  }
+} /* ✅ FECHA O @MEDIA AQUI */
+/* FOTO DO PERFIL: imagem 72x72 + anel branco 4px = avatar 80x80 */
+:root{
+  --avatar-size: 80px !important; /* 80 = 72 + 8 do border */
+}
+
+/* garante que no mobile NÃO diminua */
+@media (max-width:480px){
+  :root{ --avatar-size: 80px !important; }
+}
+
+#cardPerfil .avatar{
+  width: var(--avatar-size) !important;
+  height: var(--avatar-size) !important;
+  border: 4px solid #fff !important;
+  box-sizing: border-box !important;
+}
+
+#cardPerfil .avatar img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+:root{
+  --avatar-top: -67px !important; /* sobe a foto (ajuste fino aqui) */
+}
+.social-below-bio img[src*="telegram"]{
+  width:20px;
+  height:20px;
+}
+</style>
+<link rel="stylesheet" href="responsive.css">
+</head>
+<body>
+<div class="appbar" id="main-navbar">
+  <div class="wrap" style="position:relative">
+
+    <div class="wrapper-container">
+
+      <div class="center-container" style="transform: translateX(-21px);">
+        <a href="/" class="navbar-item">
+          <img class="brand-logo" src="images/logo-black.svg" alt="home shortcut">
+        </a>
+      </div>
+
+      <div class="right-container" style="right: 6px;">
+        <div class="select-wrapper">
+<div class="lang-dropdown" id="langDropdown">
+  <button class="lang-trigger" id="langTrigger" aria-expanded="false">
+    <img src="images/globe.svg" alt="Idioma">
+  </button>
+
+  <div class="lang-menu" id="langMenu">
+    <button data-lang="en">Inglês</button>
+    <button data-lang="pt">Português</button>
+    <button data-lang="es">Espanhol</button>
+  </div>
+</div>
+</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <main class="wrap">
+<article class="profile-card" id="cardPerfil">
+
+  <div class="cover">
+    <img id="siteBanner" src="" alt="Banner" width="1200" height="600" fetchpriority="high" decoding="async" style="opacity:0;transition:opacity .25s">
+  </div>
+
+<div class="edge-stats" aria-hidden="true">
+
+  <span class="meta" title="Fotos">
+    <img src="images/image.svg" class="ico" alt="">
+    <strong id="statFotos"></strong>
+  </span>
+
+  <span class="meta" title="Vídeos">
+    <img src="images/media-play.svg" class="ico" alt="">
+    <strong id="statVideos"></strong>
+  </span>
+
+  <span class="meta" title="Conteúdo Exclusivo">
+    <img src="images/lock.svg" class="ico lock-ico" alt="">
+    <strong>8</strong>
+  </span>
+
+  <span class="meta" title="Likes">
+    <img src="images/heart.svg" class="ico" alt="">
+    <strong id="statLikes"></strong>
+  </span>
+
+</div>
+
+      <div class="avatar-wrap">
+        <div class="avatar" aria-hidden="true">
+          <img id="siteAvatar" src="" alt="Foto de perfil" width="160" height="160" decoding="async" loading="eager" style="opacity:0;transition:opacity .25s">
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="name verified">
+  <span id="siteName"></span>
+  <span class="verified-icon" aria-label="Verificado"></span>
+</div>
+        <div class="handle" id="siteHandle"></div>
+
+        <p class="bio-text" id="bioTxt">
+
+        </p>
+        <button class="toggle-bio" id="bioBtn" aria-expanded="false" type="button" onclick="toggleBio()">Ler mais</button>
+<div class="social-below-bio" aria-label="Redes sociais">
+
+  <!-- TELEGRAM -->
+  <a class="social-ico" id="siteTelegram" href="https://t.me/maesolteiravipbot" target="_blank" rel="noopener" aria-label="Telegram">
+    <img src="images/telegram.svg" alt="">
+  </a>
+
+</div>
+<div class="offer-card" id="offerCard" style="display:none">
+  <div class="offer-card-head"><span class="offer-card-icon">✨</span> Oferta de assinatura</div>
+  <div class="offer-timer" id="offerTimer" style="display:none"></div>
+  <div class="offer-msg-row">
+    <img class="offer-avatar" id="offerAvatar" src="" alt="">
+    <div class="offer-msg" id="offerMsg"></div>
+  </div>
+  <div class="offer-cta-wrap">
+    <span class="offer-save-badge" id="offerSaveBadge"></span>
+    <div class="offer-cta" id="offerCta" role="button" tabindex="0">
+      Assinar agora <span id="offerPrice"></span>
+    </div>
+    <div class="offer-old-price">Preço original <span class="strike" id="offerOldPrice"></span></div>
+  </div>
+</div>
+<div class="plans">
+  <h3 class="plans-title">Assinaturas</h3>
+
+  <!-- 1 mês (sozinho) -->
+  <div class="plan-grid">
+    <div class="sub-btn" role="button" tabindex="0" data-plan-code="PLAN_1M" data-plan-name="Assinatura 1 mês" data-price="" onclick="openPayModal('PLAN_1M', this.dataset.price, '1 mês')" onkeydown="if(event.key==='Enter'||event.key===' ')openPayModal('PLAN_1M',this.dataset.price,'1 mês')">
+      <span class="left">
+        1 mês
+        <span class="discount-badge" id="badge1M" style="display:none"></span>
+      </span>
+      <span class="price-block">
+        <span class="price-old" id="priceOld1M" style="display:none"></span>
+        <span class="price" id="price1M"></span>
+      </span>
+    </div>
+  </div>
+
+<!-- PROMOÇÕES -->
+<div class="section-promos" id="promos">
+  <div class="promos-head" id="promosHead">
+    <h3>Promoções</h3>
+
+    <button class="promos-toggle" id="promosToggle" type="button" aria-expanded="true" aria-controls="promosBody">
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6.7 9.3a1 1 0 0 1 1.4 0L12 13.2l3.9-3.9a1 1 0 1 1 1.4 1.4l-4.6 4.6a1 1 0 0 1-1.4 0L6.7 10.7a1 1 0 0 1 0-1.4z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="promos-body" id="promosBody">
+    <div class="sub-btn" role="button" tabindex="0" data-plan-code="PLAN_3M" data-plan-name="Assinatura 3 mês" data-price="" onclick="openPayModal('PLAN_3M', this.dataset.price, '3 meses')" onkeydown="if(event.key==='Enter'||event.key===' ')openPayModal('PLAN_3M',this.dataset.price,'3 meses')">
+      <span class="left">
+        3 meses
+        <span class="discount-badge" id="badge3M" style="display:none"></span>
+      </span>
+      <span class="price-block">
+        <span class="price-old" id="priceOld3M" style="display:none"></span>
+        <span class="price" id="price3M"></span>
+      </span>
+    </div>
+
+    <div class="sub-btn" role="button" tabindex="0" data-plan-code="PLAN_12M" data-plan-name="Assinatura 12 mês" data-price="" onclick="openPayModal('PLAN_12M', this.dataset.price, '12 meses')" onkeydown="if(event.key==='Enter'||event.key===' ')openPayModal('PLAN_12M',this.dataset.price,'12 meses')">
+      <span class="left">
+        12 meses
+        <span class="discount-badge" id="badge12M" style="display:none"></span>
+      </span>
+      <span class="price-block">
+        <span class="price-old" id="priceOld12M" style="display:none"></span>
+        <span class="price" id="price12M"></span>
+      </span>
+    </div>
+  </div>
+</div>
+</div> <!-- fecha plans -->
+</div> <!-- fecha card-body -->
+</article>
+
+<!-- BLOCO 2 -->
+<div class="tabs-card" id="tabsCard">
+  <div class="tabs-privacy" id="tabsPrivacy">
+    <div class="tab-privacy active" data-target="sectionPosts">
+      <span class="tab-icon tab-icon-posts"></span>
+      <span class="tab-number" id="statPostagens"></span>
+      <span class="tab-label">Postagens</span>
+    </div>
+
+    <div class="tab-privacy" data-target="sectionMedia">
+      <span class="tab-icon tab-icon-media"></span>
+      <span class="tab-number" id="statMidias"></span>
+      <span class="tab-label">Mídias</span>
+    </div>
+    
+    <span class="tabs-underline" id="tabUnderline"></span>
+  </div>
+</div>
+
+<div class="post-card" id="postCard">
+
+  <div id="sectionPosts">
+    <!-- AQUI VAI O POST PREVIEW (igual Privacy) -->
+    <div class="p-head">
+      <img class="p-avatar" id="postAvatar" src="" alt="" style="opacity:0;transition:opacity .2s">
+      <div class="p-meta">
+        <div class="p-name">
+          <span id="postName"></span>
+          <span class="p-verified" aria-label="Verificado"></span>
+        </div>
+        <div class="p-handle" id="postHandle"></div>
+      </div>
+      <button class="p-more" aria-label="Mais opções">⋮</button>
+    </div>
+
+    <div class="p-preview">
+      <!-- watermark -->
+      <div class="p-watermark"></div>
+
+      <!-- lock central -->
+      <div class="p-lock"></div>
+
+      <!-- mini stats dentro do preview -->
+      <div class="p-mini">
+        <span class="mini">
+          <img src="images/image.svg" alt="">
+          <b id="miniStatFotos"></b>
+        </span>
+        <span class="mini">
+          <img src="images/media-play.svg" alt="">
+          <b id="miniStatVideos"></b>
+        </span>
+        <span class="mini">
+          <img src="images/heart.svg" alt="">
+          <b></b>
+        </span>
+      </div>
+    </div>
+
+    <div class="p-footer">
+      <img src="images/heart.svg" alt="">
+      <img src="images/comment-outline.svg" alt="">
+      <img src="images/circle-dollar.svg" alt="">
+      <img src="images/pasted-svg.svg" alt="">
+    </div>
+  </div>
+
+  <div id="sectionMedia" style="display:none;">
+    <!-- seu grid aqui -->
+    <div class="media-menu">
+      <div class="media-pill active">Todos</div>
+      <div class="media-pill">Fotos</div>
+      <div class="media-pill">Vídeos</div>
+      <div class="media-pill">Pagos</div>
+    </div>
+
+    <div class="media-grid">
+      <div class="media-item" data-type="photo"></div>
+      <div class="media-item" data-type="video"></div>
+      <div class="media-item" data-type="paid"></div>
+      <div class="media-item" data-type="photo"></div>
+      <div class="media-item" data-type="video"></div>
+      <div class="media-item" data-type="paid"></div>
+    </div>
+  </div>
+
+</div>
+  </main>
+
+  <!-- MODAL PIX -->
+<div class="pay-overlay" id="payModal" role="dialog" aria-hidden="true" aria-modal="true" aria-labelledby="payTitle">
+  <div class="pay-backdrop" id="payBackdrop" tabindex="-1"></div>
+
+  <div class="pay-card privacy-modal" role="document" aria-live="polite" aria-label="Modal de pagamento">
+
+    <div class="pm-header">
+     <img class="pm-banner" id="modalBanner" src="" alt="Banner de pagamento" width="1200" height="600" decoding="async" style="opacity:0;transition:opacity .25s">
+      <button class="pm-close" id="payClose"></button>
+
+      <img class="pm-avatar" id="payAvatar" src="" alt="Avatar" width="96" height="96" decoding="async" style="opacity:0;transition:opacity .2s">
+
+      <div class="pm-id">
+        <div class="pm-name" id="payName"></div>
+        <div class="pm-handle" id="payHandle"></div>
+      </div>
+    </div>
+
+    <div class="pm-body">
+
+      <!-- ── Etapa 1: Cadastro / Login ── -->
+      <div id="authGateStep" style="display:none">
+        <h2 style="font-size:18px;font-weight:700;margin:0 0 6px;color:var(--text,#111)">Acesse sua conta</h2>
+        <p style="font-size:13px;color:#888;margin:0 0 20px;line-height:1.5">Crie sua conta para liberar o acesso após o pagamento.</p>
+
+        <!-- Formulário de cadastro -->
+        <div id="agFormRegister">
+          <input type="email" id="agRegEmail" placeholder="Email/CPF" autocomplete="email"
+            style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 16px;font-size:15px;color:#111;background:#fff;margin-bottom:12px;outline:none">
+          <div style="position:relative;margin-bottom:6px">
+            <input type="password" id="agRegPass" placeholder="Senha" autocomplete="new-password"
+              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 48px 14px 16px;font-size:15px;color:#111;background:#fff;outline:none">
+            <button type="button" onclick="agTogglePass('agRegPass',this)" tabindex="-1"
+              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;line-height:1">👁</button>
+          </div>
+          <div style="position:relative;margin-bottom:16px">
+            <input type="password" id="agRegPassConfirm" placeholder="Confirmar senha" autocomplete="new-password"
+              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 48px 14px 16px;font-size:15px;color:#111;background:#fff;outline:none">
+            <button type="button" onclick="agTogglePass('agRegPassConfirm',this)" tabindex="-1"
+              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;line-height:1">👁</button>
+          </div>
+          <button type="button" id="agRegBtn" onclick="agSubmitRegister()"
+            style="width:100%;padding:15px;background:#ccc;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;transition:background .2s">Continuar</button>
+          <p style="text-align:center;font-size:14px;color:#888;margin:0">
+            Já tem uma conta?
+            <a href="#" onclick="agSwitchToLogin();return false" style="color:var(--accent,#e91e8c);font-weight:600;text-decoration:none"> Entre aqui</a>
+          </p>
+        </div>
+
+        <!-- Formulário de login (oculto por padrão) -->
+        <div id="agFormLogin" style="display:none">
+          <input type="email" id="agLoginEmail" placeholder="Email/CPF" autocomplete="email"
+            style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 16px;font-size:15px;color:#111;background:#fff;margin-bottom:12px;outline:none">
+          <div style="position:relative;margin-bottom:6px">
+            <input type="password" id="agLoginPass" placeholder="Senha" autocomplete="current-password"
+              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 48px 14px 16px;font-size:15px;color:#111;background:#fff;outline:none">
+            <button type="button" onclick="agTogglePass('agLoginPass',this)" tabindex="-1"
+              style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;line-height:1">👁</button>
+          </div>
+          <div style="text-align:right;margin-bottom:16px">
+            <a href="#" style="font-size:13px;color:#888;text-decoration:none">Esqueci minha senha</a>
+          </div>
+          <button type="button" id="agLoginBtn" onclick="agSubmitLogin()"
+            style="width:100%;padding:15px;background:#ccc;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;transition:background .2s">Continuar</button>
+          <p style="text-align:center;font-size:14px;color:#888;margin:0">
+            Não tem uma conta?
+            <a href="#" onclick="agSwitchToRegister();return false" style="color:var(--accent,#e91e8c);font-weight:600;text-decoration:none"> Cadastre-se</a>
+          </p>
+        </div>
+
+        <p id="agMsg" style="text-align:center;font-size:13px;margin-top:12px;min-height:16px;color:#e05252"></p>
+      </div>
+
+      <!-- ── Etapa 2: Pagamento PIX ── -->
+      <div id="paymentStep" style="display:none">
+      <h3 class="pm-h3" id="payTitle">Benefícios exclusivos</h3>
+
+      <ul class="pm-benefits">
+        <li><span class="pm-check">✓</span><span>Acesso ao conteúdo</span></li>
+        <li><span class="pm-check">✓</span><span>Chat exclusivo com o criador</span></li>
+        <li><span class="pm-check">✓</span><span>Cancele a qualquer hora</span></li>
+      </ul>
+
+      <div class="pm-divider-full"></div>
+
+      <h2 class="pm-title">Formas de pagamento</h2>
+
+      <div class="pm-label">Valor</div>
+      <div class="pm-amount" id="payPriceSummary">—</div>
+
+      <input class="pm-pix" id="pixKey" type="text" value="" readonly="" aria-label="Chave Pix" style="display:none">
+
+      <button class="pm-copy" id="copyPix" type="button" style="display:none">Copiar chave Pix</button>
+
+      <div class="pm-divider"></div>
+
+      <div id="awaitingPrice" class="pm-status">Aguardando geração do Pix</div>
+      <div id="qrcode" style="margin:14px auto;text-align:center;"></div>
+
+      <button id="generatePixBtn" class="pm-generate" type="button">Gerar Pix</button>
+
+      <p style="text-align:center;font-size:14px;color:#888;margin:16px 0 0">
+        Já tem cadastro?
+        <a href="/members.html" style="color:var(--accent,#e91e8c);font-weight:600;text-decoration:none"> Clique aqui</a>
+      </p>
+
+      </div><!-- /paymentStep -->
+    </div>
+  </div>
+</div>
+
+<!-- Anti-inspect: carrega apenas no desktop (não no mobile para evitar problemas no Safari iOS) -->
+<script>
+
+</script>
+<!-- app.obf.js removido -->
+<script src="js/lang.obf.js"></script>
+<script src="js/promos.obf.js"></script>
+<script src="js/tabs.obf.js"></script>
+<script src="js/media.obf.js"></script>
+
+
+
+
+<script>
+// ── CONFIG SUPABASE ── cole a URL e a ANON KEY do seu projeto ──
+var SUPABASE_URL  = 'https://ackovomkgkmjfhoidwti.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFja292b21rZ2ttamZob2lkd3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDE5ODQsImV4cCI6MjA5NTU3Nzk4NH0.ofFVhY0Q7xHiekYZUiPHiDANbR8Q8W4W4RP-y9DTg0g'; // anon key
+</script>
+<script src="content-unlock.js"></script>
+<script src="pix-modal.js"></script>
+<script>
+// ── Auth Gate no Modal ───────────────────────────────────────
+(function() {
+  var SB_URL  = 'https://ackovomkgkmjfhoidwti.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFja292b21rZ2ttamZob2lkd3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDE5ODQsImV4cCI6MjA5NTU3Nzk4NH0.ofFVhY0Q7xHiekYZUiPHiDANbR8Q8W4W4RP-y9DTg0g';
+  var _pendingPlan = null;
+
+  function getSession() {
+    try { var s = JSON.parse(localStorage.getItem('mbr_session') || '{}'); return (s.access_token || (s.session && s.session.access_token)) ? s : null; } catch(e) { return null; }
+  }
+
+  function setMsg(text, isErr) {
+    var el = document.getElementById('agMsg');
+    if (!el) return;
+    el.textContent = text;
+    el.style.color = isErr ? '#e05252' : '#22c55e';
+  }
+
+  function setBtnActive(btnId, active) {
+    var btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.style.background = active ? 'var(--accent,#e91e8c)' : '#ccc';
+  }
+
+  function traduzirErro(msg) {
+    if (!msg) return 'Ocorreu um erro. Tente novamente.';
+    var m = msg.toLowerCase();
+    if (m.includes('invalid login') || m.includes('invalid credentials') || m.includes('wrong password')) return 'E-mail ou senha incorretos.';
+    if (m.includes('user already registered') || m.includes('already been registered') || m.includes('already exists')) return 'Este e-mail já está cadastrado. Faça login.';
+    if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+    if (m.includes('signup is disabled')) return 'Cadastro temporariamente desativado.';
+    if (m.includes('password should be')) return 'A senha precisa ter pelo menos 6 caracteres.';
+    if (m.includes('unable to validate') || m.includes('token')) return 'Sessão expirada. Tente novamente.';
+    if (m.includes('rate limit') || m.includes('too many')) return 'Muitas tentativas. Aguarde alguns minutos.';
+    if (m.includes('network') || m.includes('fetch')) return 'Erro de conexão. Verifique sua internet.';
+    return msg;
+  }
+    var email = (document.getElementById('agRegEmail') || {}).value || '';
+    var pass  = (document.getElementById('agRegPass')  || {}).value || '';
+    setBtnActive('agRegBtn', email.includes('@') && pass.length >= 6);
+  }
+
+  function validateLoginInputs() {
+    var email = (document.getElementById('agLoginEmail') || {}).value || '';
+    var pass  = (document.getElementById('agLoginPass')  || {}).value || '';
+    setBtnActive('agLoginBtn', email.includes('@') && pass.length >= 1);
+  }
+
+  // Ativa inputs
+  document.addEventListener('DOMContentLoaded', function() {
+    ['agRegEmail','agRegPass','agRegPassConfirm'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', validateRegInputs);
+    });
+    ['agLoginEmail','agLoginPass'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', validateLoginInputs);
+    });
+  });
+
+  window.agTogglePass = function(inputId, btn) {
+    var el = document.getElementById(inputId);
+    if (!el) return;
+    var show = el.type === 'password';
+    el.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  };
+
+  window.agSwitchToLogin = function() {
+    document.getElementById('agFormRegister').style.display = 'none';
+    document.getElementById('agFormLogin').style.display = '';
+    setMsg('');
+  };
+
+  window.agSwitchToRegister = function() {
+    document.getElementById('agFormLogin').style.display = 'none';
+    document.getElementById('agFormRegister').style.display = '';
+    setMsg('');
+  };
+
+  window.agSubmitRegister = function() {
+    var email   = (document.getElementById('agRegEmail')        || {}).value || '';
+    var pass    = (document.getElementById('agRegPass')         || {}).value || '';
+    var confirm = (document.getElementById('agRegPassConfirm')  || {}).value || '';
+    email = email.trim();
+    if (!email || !pass) { setMsg('Preencha e-mail e senha.', true); return; }
+    if (pass.length < 6) { setMsg('A senha precisa ter pelo menos 6 caracteres.', true); return; }
+    if (pass !== confirm) { setMsg('As senhas não coincidem.', true); return; }
+
+    var btn = document.getElementById('agRegBtn');
+    btn.disabled = true; btn.textContent = 'Criando conta...';
+
+    fetch(SB_URL + '/auth/v1/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_ANON },
+      body: JSON.stringify({ email: email, password: pass }),
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+    .then(function(res) {
+      if (!res.ok) throw new Error(traduzirErro(res.data.error_description || res.data.msg || res.data.message));
+      if (!res.data.access_token) {
+        setMsg('Verifique seu e-mail para confirmar o cadastro.', false);
+        btn.disabled = false; btn.textContent = 'Continuar';
+        return;
+      }
+      localStorage.setItem('mbr_session', JSON.stringify(res.data));
+      agOnSuccess();
+    })
+    .catch(function(e) { setMsg(e.message, true); btn.disabled = false; btn.textContent = 'Continuar'; });
+  };
+
+  window.agSubmitLogin = function() {
+    var email = (document.getElementById('agLoginEmail') || {}).value || '';
+    var pass  = (document.getElementById('agLoginPass')  || {}).value || '';
+    email = email.trim();
+    if (!email || !pass) { setMsg('Preencha e-mail e senha.', true); return; }
+
+    var btn = document.getElementById('agLoginBtn');
+    btn.disabled = true; btn.textContent = 'Entrando...';
+
+    fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_ANON },
+      body: JSON.stringify({ email: email, password: pass }),
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+    .then(function(res) {
+      if (!res.ok) throw new Error(traduzirErro(res.data.error_description || res.data.msg || res.data.message));
+      localStorage.setItem('mbr_session', JSON.stringify(res.data));
+      agOnSuccess();
+    })
+    .catch(function(e) { setMsg(e.message, true); btn.disabled = false; btn.textContent = 'Continuar'; });
+  };
+
+  function agOnSuccess() {
+    // Verifica se o lead já tem acesso ativo pelo email
+    var session = getSession();
+    var email = session && (session.user && session.user.email);
+    if (email) {
+      fetch(SB_URL + '/rest/v1/access_tokens?payer_email=eq.' + encodeURIComponent(email) + '&expires_at=gt.' + new Date().toISOString() + '&select=token&limit=1', {
+        headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+      })
+      .then(function(r) { return r.ok ? r.json() : []; })
+      .then(function(rows) {
+        if (rows && rows.length && rows[0].token) {
+          // Já tem acesso ativo — redireciona direto
+          window.location.href = '/members.html?token=' + encodeURIComponent(rows[0].token);
+          return;
+        }
+        // Sem acesso — segue para gerar PIX
+        agGoToPayment();
+      })
+      .catch(function() { agGoToPayment(); });
+    } else {
+      agGoToPayment();
+    }
+  }
+
+  function agGoToPayment() {
+    document.getElementById('authGateStep').style.display = 'none';
+    document.getElementById('paymentStep').style.display = '';
+    if (_pendingPlan) {
+      var p = _pendingPlan; _pendingPlan = null;
+      setTimeout(function() {
+        if (typeof window._pixDirectOpen === 'function') {
+          window._pixDirectOpen(p.planCode, p.priceStr);
+        }
+      }, 150);
+    }
+  }
+
+  // Intercepta openPayModal — usa setTimeout para garantir que pix-modal.js já executou
+  var _origOpen = null;
+  window.addEventListener('load', function() {
+    _origOpen = window._pixModalOpen || null;
+  });
+
+  window.openPayModal = function(planCode, priceStr, label) {
+    // Pega a função original do pix-modal (definida como window.openPayModal antes do override)
+    if (!_origOpen) {
+      // fallback: tenta pegar direto do pix-modal via evento
+      _origOpen = window._pixOpenPayModal || null;
+    }
+
+    if (getSession()) {
+      var session = getSession();
+      var email = session && session.user && session.user.email;
+      if (email) {
+        fetch(SB_URL + '/rest/v1/access_tokens?payer_email=eq.' + encodeURIComponent(email) + '&expires_at=gt.' + new Date().toISOString() + '&select=token&limit=1', {
+          headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+        })
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .then(function(rows) {
+          if (rows && rows.length && rows[0].token) {
+            window.location.href = '/members.html?token=' + encodeURIComponent(rows[0].token);
+            return;
+          }
+          if (typeof window._pixDirectOpen === 'function') window._pixDirectOpen(planCode, priceStr);
+        })
+        .catch(function() {
+          if (typeof window._pixDirectOpen === 'function') window._pixDirectOpen(planCode, priceStr);
+        });
+      } else {
+        if (typeof window._pixDirectOpen === 'function') window._pixDirectOpen(planCode, priceStr);
+      }
+      return;
+    }
+
+    // Não logado — mostra auth gate
+    _pendingPlan = { planCode: planCode, priceStr: priceStr };
+
+    // Abre o modal usando classList igual o pix-modal faz
+    var modal = document.getElementById('payModal');
+    if (modal) {
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Mostra auth gate, esconde pagamento
+    var ag = document.getElementById('authGateStep');
+    var ps = document.getElementById('paymentStep');
+    if (ag) ag.style.display = '';
+    if (ps) ps.style.display = 'none';
+
+    // Atualiza preço no header
+    var priceEl = document.getElementById('payPriceSummary');
+    if (priceEl) priceEl.textContent = priceStr || '';
+  };
+
+})();
+</script>
+
+<script>
+
+// ── CARREGA CONFIG DO PERFIL (direto do Supabase) ──
+(function () {
+  // Carrega perfil via worker — ele sabe o MODEL_ID pelo env var do deploy
+  fetch('/api/admin-profile')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (cfg) {
+      if (!cfg) return;
+      window.MODEL_ID = cfg._model_id || 'default';
+      applyConfig(cfg);
+    })
+    .catch(function () {});
+
+  function applyConfig(c) {
+    if (c.avatar_url) { setImg('siteAvatar', c.avatar_url); setImg('postAvatar', c.avatar_url); setImg('payAvatar', c.avatar_url); setImg('offerAvatar', c.avatar_url); }
+    if (c.banner_url) { setImg('siteBanner', c.banner_url); setImg('modalBanner', c.banner_url); }
+    if (c.name)       { setText('siteName', c.name); setText('postName', c.name); setText('payName', c.name); document.title = 'Privacy | ' + c.name; }
+    if (c.handle)     { setText('siteHandle', c.handle); setText('postHandle', c.handle); setText('payHandle', c.handle); }
+    if (c.bio)        { var b = document.getElementById('bioTxt'); if (b) b.textContent = c.bio; }
+    if (c.telegram)   { var t = document.getElementById('siteTelegram'); if (t) t.href = c.telegram; }
+    if (c.stats_fotos)      setText('statFotos', c.stats_fotos);
+    if (c.stats_videos)     setText('statVideos', c.stats_videos);
+    if (c.stats_exclusivos) setText('statExclusivos', c.stats_exclusivos);
+    if (c.stats_postagens)  setText('statPostagens', c.stats_postagens);
+    if (c.stats_midias)     setText('statMidias', c.stats_midias);
+    if (c.stats_fotos)  { setText('miniStatFotos', c.stats_fotos); }
+    if (c.stats_videos) { setText('miniStatVideos', c.stats_videos); }
+    if (c.stats_likes)  { setText('statLikes', c.stats_likes); setText('miniStatLikes', c.stats_likes); }
+    // ── HELPER: aplica preço com desconto reverso (full + % → calcula promo) ──
+    function applyPlanPrice(planCode, priceId, priceOldId, badgeId, priceVal, fullVal, offVal) {
+      var full  = fullVal  ? parseFloat(String(fullVal).replace(',', '.'))  : 0;
+      var pct   = offVal   ? parseFloat(offVal)                             : 0;
+      var price;
+
+      if (priceVal) {
+        // Usa sempre o preço digitado como verdade absoluta
+        price = parseFloat(String(priceVal).replace(',', '.'));
+      } else if (full > 0 && pct > 0 && pct < 100) {
+        // Fallback: calcula pelo desconto reverso se não tiver preço direto
+        price = Math.round(full * (1 - pct / 100) * 100) / 100;
+      } else {
+        return; // sem dados, não exibe nada
+      }
+
+      if (!price || price <= 0) return;
+
+      var priceStr = price.toFixed(2).replace('.', ',');
+      var p = 'R$ ' + priceStr;
+      setText(priceId, p);
+      var btn = document.querySelector('[data-plan-code="' + planCode + '"]');
+      if (btn) btn.dataset.price = p;
+
+      // mostra preço riscado e badge % se tiver full + off
+      if (full > 0 && pct > 0) {
+        var fullStr = full.toFixed(2).replace('.', ',');
+        var oldEl = document.getElementById(priceOldId);
+        if (oldEl) { oldEl.textContent = 'R$ ' + fullStr; oldEl.style.display = 'inline'; }
+        var badgeEl = document.getElementById(badgeId);
+        if (badgeEl) { badgeEl.textContent = '(' + Math.round(pct) + '% off)'; badgeEl.style.display = 'inline'; }
+      }
+    }
+
+    applyPlanPrice('PLAN_1M',  'price1M',  'priceOld1M',  'badge1M',  c.plan_1m_price,  c.plan_1m_full,  c.plan_1m_off);
+    applyPlanPrice('PLAN_3M',  'price3M',  'priceOld3M',  'badge3M',  c.plan_3m_price,  c.plan_3m_full,  c.plan_3m_off);
+    applyPlanPrice('PLAN_12M', 'price12M', 'priceOld12M', 'badge12M', c.plan_12m_price, c.plan_12m_full, c.plan_12m_off);
+
+    // ── Card de oferta em destaque (configurável no admin, usa preço do plano 1 mês) ──
+    if (c.offer_message && c.show_offer_card !== false) {
+      setText('offerMsg', c.offer_message);
+      var p1  = document.getElementById('price1M');
+      var po1 = document.getElementById('priceOld1M');
+      if (p1) setText('offerPrice', p1.textContent);
+      if (po1 && po1.style.display !== 'none' && po1.textContent) {
+        setText('offerOldPrice', po1.textContent);
+      } else {
+        var oldWrap = document.querySelector('.offer-old-price');
+        if (oldWrap) oldWrap.style.display = 'none';
+      }
+      if (c.plan_1m_off && parseFloat(c.plan_1m_off) > 0) {
+        setText('offerSaveBadge', 'Economize ' + Math.round(parseFloat(c.plan_1m_off)) + '%');
+      } else {
+        var sb = document.getElementById('offerSaveBadge');
+        if (sb) sb.style.display = 'none';
+      }
+      var offerCta = document.getElementById('offerCta');
+      if (offerCta) {
+        offerCta.onclick = offerCta.onkeydown = function (ev) {
+          if (ev && ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
+          var btn1m = document.querySelector('[data-plan-code="PLAN_1M"]');
+          openPayModal('PLAN_1M', btn1m ? btn1m.dataset.price : '', '1 mês');
+        };
+      }
+      var offerCard = document.getElementById('offerCard');
+      if (offerCard) offerCard.style.display = '';
+
+      var mins = parseFloat(c.offer_timer_minutes);
+      if (mins > 0) startOfferTimer(mins);
+    }
+
+    function startOfferTimer(minutes) {
+      var key = 'offer_deadline_' + (window.MODEL_ID || 'default');
+      var deadline = parseInt(localStorage.getItem(key) || '0', 10);
+      var now = Date.now();
+      if (!deadline || deadline <= now) {
+        deadline = now + minutes * 60 * 1000;
+        try { localStorage.setItem(key, String(deadline)); } catch (e) {}
+      }
+      var el = document.getElementById('offerTimer');
+      if (!el) return;
+      el.style.display = '';
+      function tick() {
+        var diff = deadline - Date.now();
+        if (diff <= 0) {
+          deadline = Date.now() + minutes * 60 * 1000;
+          try { localStorage.setItem(key, String(deadline)); } catch (e) {}
+          diff = deadline - Date.now();
+        }
+        var d = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        var txt = 'Termina em ';
+        if (d > 0) txt += d + (d === 1 ? ' dia, ' : ' dias, ');
+        txt += h + 'h ' + m + 'm ' + s + 's';
+        el.textContent = txt;
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    // ── Visibilidade individual de cada plano ──
+    function setPlanVisible(planCode, visible) {
+      var el = document.querySelector('.sub-btn[data-plan-code="' + planCode + '"]');
+      if (!el) return;
+      var wrap = el.closest('.plan-grid') || el;
+      wrap.style.display = visible ? '' : 'none';
+    }
+    var show1m  = c.show_plan_1m  !== false;
+    var show3m  = c.show_plan_3m  !== false;
+    var show12m = c.show_plan_12m !== false;
+    setPlanVisible('PLAN_1M',  show1m);
+    setPlanVisible('PLAN_3M',  show3m);
+    setPlanVisible('PLAN_12M', show12m);
+
+    // se o plano de 1 mês estiver oculto, remove o título "Promoções" e deixa
+    // só "Assinaturas" como cabeçalho único pros planos restantes
+    if (!show1m && (show3m || show12m)) {
+      var promosHead = document.getElementById('promosHead');
+      if (promosHead) promosHead.style.display = 'none';
+    }
+
+    // se as duas promoções (3m e 12m) estiverem ocultas, esconde a seção "Promoções" inteira
+    if (!show3m && !show12m) {
+      var promos = document.getElementById('promos');
+      if (promos) promos.style.display = 'none';
+    }
+    // se nenhum plano estiver visível, esconde o bloco "Assinaturas" inteiro
+    if (!show1m && !show3m && !show12m) {
+      var plansBlock = document.querySelector('.plans');
+      if (plansBlock) plansBlock.style.display = 'none';
+    }
+
+    var bens = document.querySelectorAll('.pm-benefits li span:last-child');
+    if (c.benefit_1 && bens[0]) bens[0].textContent = c.benefit_1;
+    if (c.benefit_2 && bens[1]) bens[1].textContent = c.benefit_2;
+    if (c.benefit_3 && bens[2]) bens[2].textContent = c.benefit_3;
+  }
+
+  function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+  function toggleBio() {
+    var card = document.getElementById('cardPerfil');
+    var btn  = document.getElementById('bioBtn');
+    if (!card || !btn) return;
+    var expanded = card.classList.toggle('expanded');
+    btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    btn.textContent = expanded ? 'Ler menos' : 'Ler mais';
+  }
+  window.toggleBio = toggleBio;
+  function setImg(id, src) {
+    var el = document.getElementById(id);
+    if (!el || !src) return;
+    var sep = src.indexOf('?') >= 0 ? '&' : '?';
+    var url = src + sep + 't=' + Date.now();
+    // carrega em background e só exibe quando pronto — sem flash
+    var tmp = new Image();
+    tmp.onload = function() {
+      el.src = url;
+      el.style.opacity = '1';
+    };
+    tmp.onerror = function() {
+      // fallback: mostra mesmo assim
+      el.src = url;
+      el.style.opacity = '1';
+    };
+    tmp.src = url;
+  }
+})();
+</script>
+</body></html>

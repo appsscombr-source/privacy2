@@ -1,0 +1,16 @@
+{
+  "name": "privacy",
+  "compatibility_date": "2026-05-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "worker.js",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  }
+  // Variáveis de ambiente — configure no painel do Cloudflare Pages ou Netlify:
+  // SUPABASE_URL        = https://xxxx.supabase.co
+  // SUPABASE_SERVICE_KEY = service_role key do Supabase
+  // SUPABASE_ANON_KEY   = anon key do Supabase
+  // MODEL_ID            = identificador único desta modelo (ex: lexy, ana, julia)
+  // ADMIN_SECRET        = senha extra opcional (não obrigatório, auth é pelo Supabase)
+}

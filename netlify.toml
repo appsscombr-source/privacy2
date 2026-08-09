@@ -1,0 +1,56 @@
+# netlify.toml — configuração do deploy Netlify
+
+[build]
+  publish   = "."
+  functions = "netlify/functions"
+
+# SUPABASE_URL aparece nos HTMLs propositalmente (é a URL pública do projeto)
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL"
+
+# Todas as rotas /api/* vão para as Netlify Functions
+[[redirects]]
+  from = "/api/admin-profile"
+  to   = "/.netlify/functions/admin-profile"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin-media"
+  to   = "/.netlify/functions/admin-media"
+  status = 200
+
+[[redirects]]
+  from = "/api/pix-cashin"
+  to   = "/.netlify/functions/pix-cashin"
+  status = 200
+
+[[redirects]]
+  from = "/api/pix-webhook"
+  to   = "/.netlify/functions/pix-webhook"
+  status = 200
+
+[[redirects]]
+  from = "/api/get-content"
+  to   = "/.netlify/functions/get-content"
+  status = 200
+
+[[redirects]]
+  from = "/api/create-token"
+  to   = "/.netlify/functions/create-token"
+  status = 200
+
+[[redirects]]
+  from = "/api/activate-access"
+  to   = "/.netlify/functions/activate-access"
+  status = 200
+
+[[redirects]]
+  from = "/api/syncpay-cashin"
+  to   = "/.netlify/functions/syncpay-cashin"
+  status = 200
+
+# SPA fallback
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
