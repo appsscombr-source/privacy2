@@ -100,7 +100,10 @@ const GATEWAYS = {
         body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || (data.details && `${data.details.field}: ${data.details.issue}`) || "Erro ao gerar cobrança OmegaPay");
+      if (!res.ok) {
+        const detail = data.details ? ` (campo: ${data.details.field}, valor: ${JSON.stringify(data.details.value)}, motivo: ${data.details.issue})` : "";
+        throw new Error((data.message || "Erro ao gerar cobrança OmegaPay") + detail);
+      }
       return { pix_code: data.pix && data.pix.code, qr_code_url: data.pix && data.pix.image, identifier };
     },
   },
