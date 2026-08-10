@@ -103,7 +103,7 @@ const GATEWAYS = {
       if (!res.ok) {
         let detail = "";
         if (Array.isArray(data.details)) {
-          detail = " " + data.details.map(d => `[${d.field}: ${d.issue} (valor: ${JSON.stringify(d.value)})]`).join(", ");
+          detail = " " + data.details.map(d => JSON.stringify(d)).join(", ");
         } else if (data.details && typeof data.details === "object" && (data.details.field || data.details.issue)) {
           detail = ` (campo: ${data.details.field}, valor: ${JSON.stringify(data.details.value)}, motivo: ${data.details.issue})`;
         } else if (data.details) {
