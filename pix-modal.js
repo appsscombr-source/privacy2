@@ -11,6 +11,7 @@
   var _timerInterval = null;
   var _pollingInterval = null;
   var _pixLoading = false; // guard contra chamadas duplicadas
+  var _buyerInfo = null;   // {name, phone, document} — só usado quando o gateway exige (ex: OmegaPay)
 
   // ── Carrega gateway_config via /api/admin-profile (separado por modelo) ──
   function loadGwConfig() {
@@ -21,19 +22,19 @@
       .catch(function () { return {}; });
   }
 
-  // ── Abre modal e já dispara geração do PIX ──────────────
+  // ── Abre modal: decide se precisa coletar dados do comprador antes ─
   window.openPayModal = function (planCode, priceStr) {
     if (_pixLoading) return;
 
     var raw = (priceStr || '0').replace(/[^\d,\.]/g, '').replace(',', '.');
     _selectedPrice = parseFloat(raw) || 0;
     _selectedPlanCode = planCode || '';
+    _buyerInfo = null;
 
     var modal = document.getElementById('payModal');
     if (!modal) return;
 
     setElText('payPriceSummary', priceStr || '—');
-    resetModal();
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -44,8 +45,21 @@
     if (ag) ag.style.display = 'none';
     if (ps) ps.style.display = '';
 
-    // Gera o PIX imediatamente
-    gerarPix();
+    var result = document.getElementById('pixResult');
+    if (result) result.innerHTML = '';
+    setElText('pixStatus', '⏳ Carregando...');
+    setElDisplay('pixStatus', '');
+    setElDisplay('generatePixBtn', 'none');
+
+    loadGwConfig().then(function (cfg) {
+      var gw = cfg.gateway || 'syncpay';
+      if (gw === 'omegapay') {
+        showBuyerInfoForm();
+      } else {
+        resetModal();
+        gerarPix();
+      }
+    });
   };
 
   // Expõe função interna para o auth gate poder chamar após login
@@ -61,6 +75,7 @@
     if (_timerInterval)  { clearInterval(_timerInterval);  _timerInterval  = null; }
     if (_pollingInterval) { clearInterval(_pollingInterval); _pollingInterval = null; }
     _pixLoading = false;
+    _buyerInfo = null;
     _gwConfig = null; // limpa cache para sempre buscar config atualizada
   }
 
@@ -73,6 +88,105 @@
     setElText('pixStatus', '⏳ Gerando PIX...');
     setElDisplay('pixStatus', '');
     setElDisplay('generatePixBtn', 'none');
+  }
+
+  // ── Formulário de dados do comprador (gateways que exigem, ex: OmegaPay) ─
+  function showBuyerInfoForm() {
+    var result = document.getElementById('pixResult');
+    if (!result) return;
+    setElDisplay('pixStatus', 'none');
+
+    result.innerHTML =
+      '<div style="text-align:left;max-width:320px;margin:0 auto;">' +
+        '<p style="font-size:13px;color:var(--text-dim,#aaa);margin:0 0 14px;text-align:center">Confirme seus dados para gerar o PIX</p>' +
+        '<label style="display:block;font-size:12px;color:var(--text-dim,#999);margin-bottom:4px">Nome completo</label>' +
+        '<input id="buyerNameInput" type="text" placeholder="Seu nome completo" autocomplete="name" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #ddd;font-size:14px;margin-bottom:12px;color:#111">' +
+        '<label style="display:block;font-size:12px;color:var(--text-dim,#999);margin-bottom:4px">Telefone (WhatsApp)</label>' +
+        '<input id="buyerPhoneInput" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #ddd;font-size:14px;margin-bottom:12px;color:#111">' +
+        '<label style="display:block;font-size:12px;color:var(--text-dim,#999);margin-bottom:4px">CPF</label>' +
+        '<input id="buyerDocInput" type="text" placeholder="000.000.000-00" inputmode="numeric" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid #ddd;font-size:14px;margin-bottom:8px;color:#111">' +
+        '<p id="buyerFormError" style="color:#e74c3c;font-size:12px;margin:0 0 10px;display:none"></p>' +
+        '<button id="buyerFormSubmit" style="display:block;width:100%;padding:13px;background:#f6842c;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;">Continuar para pagamento</button>' +
+      '</div>';
+
+    var phoneEl = document.getElementById('buyerPhoneInput');
+    if (phoneEl) phoneEl.addEventListener('input', function () { phoneEl.value = maskPhone(phoneEl.value); });
+    var docEl = document.getElementById('buyerDocInput');
+    if (docEl) docEl.addEventListener('input', function () { docEl.value = maskDocument(docEl.value); });
+
+    var submitBtn = document.getElementById('buyerFormSubmit');
+    if (submitBtn) submitBtn.addEventListener('click', function () {
+      var name  = (document.getElementById('buyerNameInput')  || {}).value || '';
+      var phone = (document.getElementById('buyerPhoneInput') || {}).value || '';
+      var doc   = (document.getElementById('buyerDocInput')   || {}).value || '';
+
+      var errMsg = validateBuyerInfo(name, phone, doc);
+      var errEl = document.getElementById('buyerFormError');
+      if (errMsg) {
+        if (errEl) { errEl.textContent = errMsg; errEl.style.display = ''; }
+        return;
+      }
+
+      _buyerInfo = { name: name.trim(), phone: phone.trim(), document: doc.trim() };
+      resetModal();
+      gerarPix();
+    });
+  }
+
+  // ── Máscaras simples de telefone e CPF/CNPJ ─────────────
+  function maskPhone(v) {
+    var d = String(v || '').replace(/\D/g, '').slice(0, 11);
+    if (d.length <= 10) {
+      return d.replace(/^(\d{0,2})(\d{0,4})(\d{0,4}).*$/, function (_, a, b, c) {
+        var out = a ? '(' + a + ')' : '';
+        if (b) out += ' ' + b;
+        if (c) out += '-' + c;
+        return out;
+      });
+    }
+    return d.replace(/^(\d{0,2})(\d{0,5})(\d{0,4}).*$/, function (_, a, b, c) {
+      var out = a ? '(' + a + ')' : '';
+      if (b) out += ' ' + b;
+      if (c) out += '-' + c;
+      return out;
+    });
+  }
+
+  function maskDocument(v) {
+    var d = String(v || '').replace(/\D/g, '').slice(0, 14);
+    if (d.length <= 11) {
+      return d.replace(/^(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2}).*$/, function (_, a, b, c, e) {
+        var out = a || '';
+        if (b) out += '.' + b;
+        if (c) out += '.' + c;
+        if (e) out += '-' + e;
+        return out;
+      });
+    }
+    return d.replace(/^(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2}).*$/, function (_, a, b, c, e, f) {
+      var out = a || '';
+      if (b) out += '.' + b;
+      if (c) out += '.' + c;
+      if (e) out += '/' + e;
+      if (f) out += '-' + f;
+      return out;
+    });
+  }
+
+  // ── Validação leve antes de enviar (formato, não dígito verificador) ─
+  function validateBuyerInfo(name, phone, doc) {
+    if (!name || name.trim().length < 3 || name.trim().indexOf(' ') === -1) {
+      return 'Informe seu nome completo.';
+    }
+    var phoneDigits = String(phone || '').replace(/\D/g, '');
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      return 'Telefone inválido. Use o formato (DDD) 99999-9999.';
+    }
+    var docDigits = String(doc || '').replace(/\D/g, '');
+    if (docDigits.length !== 11 && docDigits.length !== 14) {
+      return 'CPF inválido. Digite os 11 números do seu CPF.';
+    }
+    return null;
   }
 
   // ── Gera PIX via Netlify Function ───────────────────────
@@ -111,7 +225,13 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(Object.assign(
-          { amount: _selectedPrice, plan_code: _selectedPlanCode, buyer_email: buyerEmail, gateway: cfg.gateway || 'syncpay', site_url: cfg.site_url || '' },
+          {
+            amount: _selectedPrice, plan_code: _selectedPlanCode, buyer_email: buyerEmail,
+            buyer_name:     (_buyerInfo && _buyerInfo.name)     || '',
+            buyer_phone:    (_buyerInfo && _buyerInfo.phone)    || '',
+            buyer_document: (_buyerInfo && _buyerInfo.document) || '',
+            gateway: cfg.gateway || 'syncpay', site_url: cfg.site_url || ''
+          },
           cfg // passa todas as credenciais da config (client_id, api_key, etc.)
         )),
       })
