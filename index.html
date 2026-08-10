@@ -2864,6 +2864,7 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
     if (m.includes('network') || m.includes('fetch')) return 'Erro de conexão. Verifique sua internet.';
     return msg;
   }
+  function validateRegInputs() {
     var email = (document.getElementById('agRegEmail') || {}).value || '';
     var pass  = (document.getElementById('agRegPass')  || {}).value || '';
     setBtnActive('agRegBtn', email.includes('@') && pass.length >= 6);
