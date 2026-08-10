@@ -173,7 +173,7 @@
     });
   }
 
-  // ── Validação leve antes de enviar (formato, não dígito verificador) ─
+  // ── Validação leve antes de enviar (formato + dígito verificador) ─
   function validateBuyerInfo(name, phone, doc) {
     if (!name || name.trim().length < 3 || name.trim().indexOf(' ') === -1) {
       return 'Informe seu nome completo.';
@@ -183,10 +183,47 @@
       return 'Telefone inválido. Use o formato (DDD) 99999-9999.';
     }
     var docDigits = String(doc || '').replace(/\D/g, '');
-    if (docDigits.length !== 11 && docDigits.length !== 14) {
+    if (docDigits.length === 11) {
+      if (!isValidCPF(docDigits)) return 'CPF inválido. Confira os números digitados.';
+    } else if (docDigits.length === 14) {
+      if (!isValidCNPJ(docDigits)) return 'CNPJ inválido. Confira os números digitados.';
+    } else {
       return 'CPF inválido. Digite os 11 números do seu CPF.';
     }
     return null;
+  }
+
+  // ── Validação de dígito verificador (CPF) ───────────────
+  function isValidCPF(cpf) {
+    if (!cpf || cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    var sum = 0, i, rest;
+    for (i = 1; i <= 9; i++) sum += parseInt(cpf.charAt(i - 1), 10) * (11 - i);
+    rest = (sum * 10) % 11;
+    if (rest === 10 || rest === 11) rest = 0;
+    if (rest !== parseInt(cpf.charAt(9), 10)) return false;
+    sum = 0;
+    for (i = 1; i <= 10; i++) sum += parseInt(cpf.charAt(i - 1), 10) * (12 - i);
+    rest = (sum * 10) % 11;
+    if (rest === 10 || rest === 11) rest = 0;
+    return rest === parseInt(cpf.charAt(10), 10);
+  }
+
+  // ── Validação de dígito verificador (CNPJ) ──────────────
+  function isValidCNPJ(cnpj) {
+    if (!cnpj || cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+    var calc = function (base) {
+      var weights = base.length === 12
+        ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+        : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+      var sum = 0;
+      for (var i = 0; i < base.length; i++) sum += parseInt(base.charAt(i), 10) * weights[i];
+      var rest = sum % 11;
+      return rest < 2 ? 0 : 11 - rest;
+    };
+    var d1 = calc(cnpj.substring(0, 12));
+    if (d1 !== parseInt(cnpj.charAt(12), 10)) return false;
+    var d2 = calc(cnpj.substring(0, 13));
+    return d2 === parseInt(cnpj.charAt(13), 10);
   }
 
   // ── Gera PIX via Netlify Function ───────────────────────
