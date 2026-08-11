@@ -2724,21 +2724,24 @@ main.wrap{
         <!-- Formulário de cadastro -->
         <div id="agFormRegister">
           <input type="email" id="agRegEmail" placeholder="Email/CPF" autocomplete="email"
-            style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 16px;font-size:15px;color:#111;background:#fff;margin-bottom:12px;outline:none">
-          <div style="position:relative;margin-bottom:6px">
+            style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:999px;padding:14px 20px;font-size:15px;color:#111;background:#fff;outline:none;margin-bottom:6px">
+          <p id="agRegEmailErr" style="display:none;color:#e05252;font-size:12px;margin:0 4px 6px">Campo obrigatório</p>
+          <div style="position:relative">
             <input type="password" id="agRegPass" placeholder="Senha" autocomplete="new-password"
-              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 48px 14px 16px;font-size:15px;color:#111;background:#fff;outline:none">
+              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:999px;padding:14px 48px 14px 20px;font-size:15px;color:#111;background:#fff;outline:none;margin-bottom:6px">
             <button type="button" onclick="agTogglePass('agRegPass',this)" tabindex="-1"
               style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;line-height:1">👁</button>
           </div>
-          <div style="position:relative;margin-bottom:16px">
+          <p id="agRegPassErr" style="display:none;color:#e05252;font-size:12px;margin:0 4px 6px">Campo obrigatório</p>
+          <div style="position:relative">
             <input type="password" id="agRegPassConfirm" placeholder="Confirmar senha" autocomplete="new-password"
-              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 48px 14px 16px;font-size:15px;color:#111;background:#fff;outline:none">
+              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:999px;padding:14px 48px 14px 20px;font-size:15px;color:#111;background:#fff;outline:none;margin-bottom:6px">
             <button type="button" onclick="agTogglePass('agRegPassConfirm',this)" tabindex="-1"
               style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;line-height:1">👁</button>
           </div>
+          <p id="agRegPassConfirmErr" style="display:none;color:#e05252;font-size:12px;margin:0 4px 6px">Campo obrigatório</p>
           <button type="button" id="agRegBtn" onclick="agSubmitRegister()"
-            style="width:100%;padding:15px;background:#ccc;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;transition:background .2s">Continuar</button>
+            style="width:100%;padding:15px;background:#ccc;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;margin:6px 0 16px;transition:background .2s">Continuar</button>
           <p style="text-align:center;font-size:14px;color:#888;margin:0">
             Já tem uma conta?
             <a href="#" onclick="agSwitchToLogin();return false" style="color:var(--accent,#e91e8c);font-weight:600;text-decoration:none"> Entre aqui</a>
@@ -2748,18 +2751,20 @@ main.wrap{
         <!-- Formulário de login (oculto por padrão) -->
         <div id="agFormLogin" style="display:none">
           <input type="email" id="agLoginEmail" placeholder="Email/CPF" autocomplete="email"
-            style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 16px;font-size:15px;color:#111;background:#fff;margin-bottom:12px;outline:none">
-          <div style="position:relative;margin-bottom:6px">
+            style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:999px;padding:14px 20px;font-size:15px;color:#111;background:#fff;outline:none;margin-bottom:6px">
+          <p id="agLoginEmailErr" style="display:none;color:#e05252;font-size:12px;margin:0 4px 6px">Campo obrigatório</p>
+          <div style="position:relative">
             <input type="password" id="agLoginPass" placeholder="Senha" autocomplete="current-password"
-              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px 48px 14px 16px;font-size:15px;color:#111;background:#fff;outline:none">
+              style="width:100%;box-sizing:border-box;border:1.5px solid #e0e0e0;border-radius:999px;padding:14px 48px 14px 20px;font-size:15px;color:#111;background:#fff;outline:none;margin-bottom:6px">
             <button type="button" onclick="agTogglePass('agLoginPass',this)" tabindex="-1"
               style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;line-height:1">👁</button>
           </div>
-          <div style="text-align:right;margin-bottom:16px">
+          <p id="agLoginPassErr" style="display:none;color:#e05252;font-size:12px;margin:0 4px 6px">Campo obrigatório</p>
+          <div style="text-align:right;margin:2px 0 16px">
             <a href="#" style="font-size:13px;color:#888;text-decoration:none">Esqueci minha senha</a>
           </div>
           <button type="button" id="agLoginBtn" onclick="agSubmitLogin()"
-            style="width:100%;padding:15px;background:#ccc;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;transition:background .2s">Continuar</button>
+            style="width:100%;padding:15px;background:#ccc;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;transition:background .2s">Continuar</button>
           <p style="text-align:center;font-size:14px;color:#888;margin:0">
             Não tem uma conta?
             <a href="#" onclick="agSwitchToRegister();return false" style="color:var(--accent,#e91e8c);font-weight:600;text-decoration:none"> Cadastre-se</a>
@@ -2864,15 +2869,25 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
     if (m.includes('network') || m.includes('fetch')) return 'Erro de conexão. Verifique sua internet.';
     return msg;
   }
+  function agFieldErr(errId, show) {
+    var el = document.getElementById(errId);
+    if (el) el.style.display = show ? '' : 'none';
+  }
+
   function validateRegInputs() {
     var email = (document.getElementById('agRegEmail') || {}).value || '';
     var pass  = (document.getElementById('agRegPass')  || {}).value || '';
+    if (email) agFieldErr('agRegEmailErr', false);
+    if (pass)  agFieldErr('agRegPassErr', false);
+    agFieldErr('agRegPassConfirmErr', false);
     setBtnActive('agRegBtn', email.includes('@') && pass.length >= 6);
   }
 
   function validateLoginInputs() {
     var email = (document.getElementById('agLoginEmail') || {}).value || '';
     var pass  = (document.getElementById('agLoginPass')  || {}).value || '';
+    if (email) agFieldErr('agLoginEmailErr', false);
+    if (pass)  agFieldErr('agLoginPassErr', false);
     setBtnActive('agLoginBtn', email.includes('@') && pass.length >= 1);
   }
 
@@ -2900,12 +2915,14 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
     document.getElementById('agFormRegister').style.display = 'none';
     document.getElementById('agFormLogin').style.display = '';
     setMsg('');
+    ['agRegEmailErr','agRegPassErr','agRegPassConfirmErr','agLoginEmailErr','agLoginPassErr'].forEach(function(id) { agFieldErr(id, false); });
   };
 
   window.agSwitchToRegister = function() {
     document.getElementById('agFormLogin').style.display = 'none';
     document.getElementById('agFormRegister').style.display = '';
     setMsg('');
+    ['agRegEmailErr','agRegPassErr','agRegPassConfirmErr','agLoginEmailErr','agLoginPassErr'].forEach(function(id) { agFieldErr(id, false); });
   };
 
   window.agSubmitRegister = function() {
@@ -2913,9 +2930,35 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
     var pass    = (document.getElementById('agRegPass')         || {}).value || '';
     var confirm = (document.getElementById('agRegPassConfirm')  || {}).value || '';
     email = email.trim();
-    if (!email || !pass) { setMsg('Preencha e-mail e senha.', true); return; }
-    if (pass.length < 6) { setMsg('A senha precisa ter pelo menos 6 caracteres.', true); return; }
-    if (pass !== confirm) { setMsg('As senhas não coincidem.', true); return; }
+
+    var hasErr = false;
+    var emailErrEl = document.getElementById('agRegEmailErr');
+    var passErrEl  = document.getElementById('agRegPassErr');
+    var confErrEl  = document.getElementById('agRegPassConfirmErr');
+    if (emailErrEl) emailErrEl.textContent = 'Campo obrigatório';
+    agFieldErr('agRegEmailErr', !email);
+    if (!email) hasErr = true;
+
+    if (!pass) {
+      if (passErrEl) passErrEl.textContent = 'Campo obrigatório';
+      agFieldErr('agRegPassErr', true);
+      hasErr = true;
+    } else if (pass.length < 6) {
+      if (passErrEl) passErrEl.textContent = 'Mínimo de 6 caracteres';
+      agFieldErr('agRegPassErr', true);
+      hasErr = true;
+    } else {
+      agFieldErr('agRegPassErr', false);
+    }
+
+    if (pass && confirm && pass !== confirm) {
+      if (confErrEl) confErrEl.textContent = 'As senhas não coincidem';
+      agFieldErr('agRegPassConfirmErr', true);
+      hasErr = true;
+    } else {
+      agFieldErr('agRegPassConfirmErr', false);
+    }
+    if (hasErr) return;
 
     var btn = document.getElementById('agRegBtn');
     btn.disabled = true; btn.textContent = 'Criando conta...';
@@ -2943,7 +2986,10 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
     var email = (document.getElementById('agLoginEmail') || {}).value || '';
     var pass  = (document.getElementById('agLoginPass')  || {}).value || '';
     email = email.trim();
-    if (!email || !pass) { setMsg('Preencha e-mail e senha.', true); return; }
+
+    agFieldErr('agLoginEmailErr', !email);
+    agFieldErr('agLoginPassErr', !pass);
+    if (!email || !pass) return;
 
     var btn = document.getElementById('agLoginBtn');
     btn.disabled = true; btn.textContent = 'Entrando...';
